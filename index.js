@@ -1,3 +1,5 @@
+require("dotenv/config");
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -47,9 +49,9 @@ app.get("/menus/:menu_name", async (req, res) => {
   }
 });
 
-// update a menu method 
+// update a menu method
 //delete a menu method
 
-app.listen(5000, () => {
-  console.log("Server has started on PORT 5000");
+app.listen(process.env.API_PORT, () => {
+  console.log("Server has started on PORT 5001");
 });

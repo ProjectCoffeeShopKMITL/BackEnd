@@ -175,3 +175,6 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,node,react
+.DS_Store
+.env
+database.json

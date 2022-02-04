@@ -1,9 +1,5 @@
--- All Command For Postgres Database
+/* Replace with your SQL commands */
 
-CREATE DATABASE coffeeshop;
-
--- Menu Module 
--- UP
 CREATE TABLE menu(
     menu_id SERIAL PRIMARY KEY,
     menu_name TEXT,
@@ -20,7 +16,3 @@ CREATE TABLE photo_menu(
     menu_id SERIAL REFERENCES menu (menu_id),
     img TEXT
 );
-
--- down
-DROP TABLE photo_menu;
-DROP TABLE menu;

@@ -10,47 +10,20 @@ app.use(cors());
 app.use(express.json());
 
 //Route
+//get all menu to display
+app.get("/menus", async (req, res) => {
+  try {
+    //name, price, sale_to, img ---> only one picture
+    const allMenus = await pool.query("SELECT menu.menu_name, menu.price, menu.sale_to, photo_menu.img FROM menu LEFT JOIN photo_menu ON menu.menu_id = photo_menu.menu_id WHERE photo_menu.photo_menu_description = 'main'");
+    res.json(allMenus.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+//get a menu detail
 
-//Menu Route
-//Create menu method
-// app.post("/addMenu", async (req, res) => {
-//   try {
-//     const { menu_name, menu_price, amount_menu } = req.body;
-//     const newMenu = await pool.query(
-//       "INSERT INTO menu (menu_name, menu_price, amount_menu) VALUES($1,$2,$3) RETURNING *",
-//       [menu_name, menu_price, amount_menu]
-//     );
-//     res.json(newMenu.rows[0]);
-//   } catch (err) {
-//     console.error(err.message);
-//   }
-// });
+// create a menu
 
-//get all menu method
-// app.get("/menus", async (req, res) => {
-//   try {
-//     const allMenus = await pool.query("SELECT * FROM menu");
-//     res.json(allMenus.rows);
-//   } catch (err) {
-//     console.error(err.message);
-//   }
-// });
-
-//get a menu method
-// app.get("/menus/:menu_name", async (req, res) => {
-//   try {
-//     const { menu_name } = req.params;
-//     const menu = await pool.query("SELECT * FROM menu WHERE menu_name = $1", [
-//       menu_name,
-//     ]);
-//     res.json(menu.rows[0]);
-//   } catch (err) {
-//     console.error(err.message);
-//   }
-// });
-
-// update a menu method
-//delete a menu method
 
 app.listen(process.env.API_PORT, () => {
   console.log("Server has started on PORT 5001");

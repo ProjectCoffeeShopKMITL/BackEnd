@@ -18,7 +18,8 @@ CREATE TABLE menu(
 CREATE TABLE photo_menu(
     photo_menu_id SERIAL PRIMARY KEY ,
     menu_id SERIAL REFERENCES menu (menu_id),
-    img TEXT
+    img TEXT,
+    photo_menu_description TEXT
 );
 
 -- down

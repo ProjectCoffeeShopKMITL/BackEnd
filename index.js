@@ -15,7 +15,7 @@ app.get("/menus", async (req, res) => {
   try {
     //name, price, sale_to, img ---> only one picture
     const allMenus = await pool.query(`
-    SELECT m.menu_name, m.price::float, m.sale_to::float, pm.img, r.star::float
+    SELECT m.menu_name, m.price::float, m.sale_to::float, pm.img, r.star::float, m.menu_type
     FROM menu m
              LEFT JOIN (
         SELECT DISTINCT ON (pm.menu_id) pm.menu_id, pm.img
@@ -56,7 +56,7 @@ app.get("/menus/:menu_name", async (req, res) => {
   try {
     //get menu_name as parameter for query a menu detail
     // const { filter_by, sort_by } = req.query; // get query to sort
-    const { menu_name } = req.params
+    const { menu_name } = req.params;
 
     //get primary key from menu table can use with menu_id.rows[0].menu_id
     const menu_id = await pool.query(

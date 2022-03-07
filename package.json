@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon src/index.js",
     "migrate": "db-migrate up",
     "migrate:down":"db-migrate down",
     "migrate:create": "db-migrate create",

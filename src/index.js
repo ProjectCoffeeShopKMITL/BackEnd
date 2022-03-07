@@ -4,11 +4,18 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
-const { query } = require("express");
+const homepageRoute = require('./routes/homepage');
+
 
 //middleware
 app.use(cors());
 app.use(express.json());
+
+//homepage route
+app.get('/homepage', homepageRoute);
+app.get('/homepage/section/1', homepageRoute);
+app.post('/homepage/section/1', homepageRoute);
+app.delete('/homepage/section/1/:id', homepageRoute);
 
 //const test value, menus = object (type)
 let menus = {
@@ -43,7 +50,6 @@ app.get("/menus", async (req, res) => {
     console.error(err.message);
   }
 });
-
 //get a menu
 app.get("/menus/:menu_name", async (req, res) => {
   try {
@@ -59,7 +65,6 @@ app.get("/menus/:menu_name", async (req, res) => {
     console.error(err.message);
   }
 });
-
 //post a menu
 app.post("/menus", async (req, res) => {
   try {
@@ -68,7 +73,6 @@ app.post("/menus", async (req, res) => {
     console.error(err.message);
   }
 });
-
 //update a menu
 app.put("/menus/:menu_id", async (req, res) => {
   try {
@@ -79,7 +83,6 @@ app.put("/menus/:menu_id", async (req, res) => {
     console.error(err.message);
   }
 });
-
 //delete a menu
 app.delete("/menus/:menu_id", async (req, res) => {
   try {
@@ -92,7 +95,6 @@ app.delete("/menus/:menu_id", async (req, res) => {
 });
 
 //route homepage
-
 let queryHome = {
   1: {
     id: 1,
@@ -116,94 +118,6 @@ let queryHome = {
     img: "file img3",
   },
 };
-
-//get homepage "/homepage"
-app.get("/homepage", async (req, res) => {
-  try {
-    return res.send(Object.values(queryHome));
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-
-//CRUD section 1 "/homepage/section/1"
-//get section1
-app.get("/homepage/section/1", async (req, res) => {
-  try {
-    //get all info but not done (need to join photo first)
-    const allSection1 = await pool.query(`
-    SELECT *
-    FROM homepage AS h
-    WHERE h.section = 1;
-    `)
-    res.json(allSection1.rows[0]);
-  } catch (err) {
-    console.error(err.message);
-  }
-});
-//add section 1 
-app.post("/homepage/section/1", async (req, res) => {
-  try {
-    // {
-    //   header: 'text',
-    //   detail: 'text',
-    //   img: 'file IMG'
-    // }
-
-    //get from client
-    const { header, detail, img } = req.body;
-    //add photo
-    const addPhoto = await pool.query(`
-      INSERT INTO photo_content (img)
-      VALUES ($1)
-    `, [img]);
-    //add info
-    const newSection1 = await pool.query(`
-      INSERT INTO homepage (section, header, detail, photo_content_id)
-      VALUES (1, $1, $2,
-              (SELECT p.id
-                FROM photo_content AS p
-               WHERE p.img = $3
-              )
-      )
-    `,[header, detail, img]);
-  
-  } catch (err) {
-    console.log(err.message)
-  }
-});
-//update section1
-//delete section1
-app.delete("/homepage/section/1/:id", async (req, res) => {
-  try {
-    //get id from parameter
-    let { id } = req.params;
-    //turn id(type:string) to id(int)
-    id = parseInt(id);
-    //get id photo
-    let idPhoto = await pool.query(`
-      SELECT h.photo_content_id::int
-      FROM homepage as h
-      WHERE h.id = $1
-    `, [id]);
-    idPhoto = idPhoto.rows[0].photo_content_id;
-    //delete info (need to delete info before photo because FK of photo_id)
-    const deleteInfo = await pool.query(`
-      DELETE FROM homepage as h
-      WHERE h.id = $1
-    `, [id])
-    //delete photo
-    const deletePhoto = await pool.query(`
-      DELETE FROM photo_content as p
-      WHERE p.id = $1
-    `, [idPhoto]);
-    // console.log("DELETE SUCCESS");
-  } catch (err) {
-    console.error(err.message);
-  }
-
-});
- 
 
 //get all menu to display
 // app.get("/menus", async (req, res) => {

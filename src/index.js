@@ -3,7 +3,6 @@ require("dotenv/config");
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const pool = require("./db");
 const homepageRoute = require('./routes/homepage');
 
 
@@ -15,7 +14,9 @@ app.use(express.json());
 app.get('/homepage', homepageRoute);
 app.get('/homepage/section/1', homepageRoute);
 app.post('/homepage/section/1', homepageRoute);
+app.put('/homepage/section/1/:id', homepageRoute);
 app.delete('/homepage/section/1/:id', homepageRoute);
+
 
 //const test value, menus = object (type)
 let menus = {

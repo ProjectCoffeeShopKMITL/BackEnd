@@ -17,6 +17,21 @@ app.post('/homepage/section/1', homepageRoute);
 app.put('/homepage/section/1/:id', homepageRoute);
 app.delete('/homepage/section/1/:id', homepageRoute);
 
+app.get('/homepage/section/2', homepageRoute);
+app.post('/homepage/section/2', homepageRoute);
+app.put('/homepage/section/2/:id', homepageRoute);
+app.delete('/homepage/section/2/:id', homepageRoute);
+
+app.get('/homepage/section/3', homepageRoute);
+app.post('/homepage/section/3', homepageRoute);
+app.put('/homepage/section/3/:id', homepageRoute);
+app.delete('/homepage/section/3/:id', homepageRoute);
+
+app.get('/homepage/section/4', homepageRoute);
+app.post('/homepage/section/4', homepageRoute);
+app.put('/homepage/section/4/:id', homepageRoute);
+app.delete('/homepage/section/4/:id', homepageRoute);
+
 
 //const test value, menus = object (type)
 let menus = {

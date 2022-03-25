@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const homepageRoute = require('./routes/homepage');
-
+const aboutUsRoute = require("./routes/aboutUs");
 
 //middleware
 app.use(cors());
@@ -32,6 +32,9 @@ app.post('/homepage/section/4', homepageRoute);
 app.put('/homepage/section/4/:id', homepageRoute);
 app.delete('/homepage/section/4/:id', homepageRoute);
 
+//about us route
+app.get('/about_us', aboutUsRoute);
+app.put('/about_us/:id', aboutUsRoute);
 
 //const test value, menus = object (type)
 let menus = {

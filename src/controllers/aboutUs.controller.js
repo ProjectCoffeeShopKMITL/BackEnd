@@ -24,7 +24,7 @@ const updateInfo = async (req, res) => {
         //get new info
         const { content } = req.body;
         //get id from client
-        const { id } = req.params;
+        let { id } = req.params;
         //parse id to int
         id = parseInt(id);
 

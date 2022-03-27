@@ -3,38 +3,45 @@ require("dotenv/config");
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const homepageRoute = require('./routes/homepage');
+const homepageRoute = require("./routes/homepage");
 const aboutUsRoute = require("./routes/aboutUs");
+const galleryRoute = require("./routes/gallery");
 
 //middleware
 app.use(cors());
 app.use(express.json());
 
 //homepage route
-app.get('/homepage', homepageRoute);
-app.get('/homepage/section/1', homepageRoute);
-app.post('/homepage/section/1', homepageRoute);
-app.put('/homepage/section/1/:id', homepageRoute);
-app.delete('/homepage/section/1/:id', homepageRoute);
+app.get("/homepage", homepageRoute);
+app.get("/homepage/section/1", homepageRoute);
+app.post("/homepage/section/1", homepageRoute);
+app.put("/homepage/section/1/:id", homepageRoute);
+app.delete("/homepage/section/1/:id", homepageRoute);
 
-app.get('/homepage/section/2', homepageRoute);
-app.post('/homepage/section/2', homepageRoute);
-app.put('/homepage/section/2/:id', homepageRoute);
-app.delete('/homepage/section/2/:id', homepageRoute);
+app.get("/homepage/section/2", homepageRoute);
+app.post("/homepage/section/2", homepageRoute);
+app.put("/homepage/section/2/:id", homepageRoute);
+app.delete("/homepage/section/2/:id", homepageRoute);
 
-app.get('/homepage/section/3', homepageRoute);
-app.post('/homepage/section/3', homepageRoute);
-app.put('/homepage/section/3/:id', homepageRoute);
-app.delete('/homepage/section/3/:id', homepageRoute);
+app.get("/homepage/section/3", homepageRoute);
+app.post("/homepage/section/3", homepageRoute);
+app.put("/homepage/section/3/:id", homepageRoute);
+app.delete("/homepage/section/3/:id", homepageRoute);
 
-app.get('/homepage/section/4', homepageRoute);
-app.post('/homepage/section/4', homepageRoute);
-app.put('/homepage/section/4/:id', homepageRoute);
-app.delete('/homepage/section/4/:id', homepageRoute);
+app.get("/homepage/section/4", homepageRoute);
+app.post("/homepage/section/4", homepageRoute);
+app.put("/homepage/section/4/:id", homepageRoute);
+app.delete("/homepage/section/4/:id", homepageRoute);
 
 //about us route
-app.get('/about_us', aboutUsRoute);
-app.put('/about_us/:id', aboutUsRoute);
+app.get("/about_us", aboutUsRoute);
+app.put("/about_us/:id", aboutUsRoute);
+
+//gallery route
+app.get("/gallery", galleryRoute);
+app.post("/gallery", galleryRoute);
+app.put("/gallery/:id", galleryRoute);
+app.delete("/gallery/:id", galleryRoute);
 
 //const test value, menus = object (type)
 let menus = {

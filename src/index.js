@@ -47,7 +47,10 @@ app.delete("/gallery/:id", galleryRoute);
 //menu route
 app.get("/menu", menuRoute);
 app.get("/menu/:name", menuRoute);
+app.get("/menu/recommend", menuRoute);
 app.post("/menu", menuRoute);
+app.put("/menu/:id", menuRoute);
+app.delete("/menu/:id", menuRoute);
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

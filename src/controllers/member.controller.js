@@ -117,7 +117,7 @@ const loginMember = async (req, res) => {
             `,
         [email]
       );
-      res.send(getMemberData);
+      res.send(getMemberData.rows);
     } else {
       res.status(400).send("Not have this email!");
     }

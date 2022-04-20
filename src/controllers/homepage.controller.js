@@ -172,7 +172,7 @@ const addSection2 = async (req, res) => {
     console.error(err.message);
   }
 };
-//PUT method 'homepage/section/2/:id'
+//PUT method '/homepage/section/2/:id'
 const updateSection2 = async (req, res) => {
   try {
     //get req.body

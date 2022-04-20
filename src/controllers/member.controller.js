@@ -73,15 +73,15 @@ const registerMember = async (req, res) => {
       //register member to database
       const registerMemberData = await pool.query(
         `
-          INSERT INTO member (phone_no, email, password, gender, birthdate, register_date, is_verified, firstname, lastname)
-          VALUES ('', $1, $2, '', '', NOW(), false, '', '')
+          INSERT INTO member (email, password)
+          VALUES ($1, $2)
       `,
         [email, password]
       );
 
       res.send("Register Complete");
     } else {
-      res.send("email is Duplicate");
+      res.status(400).send("email is Duplicate");
     }
   } catch (err) {
     console.error(err.message);
@@ -119,7 +119,7 @@ const loginMember = async (req, res) => {
       );
       res.send(getMemberData);
     } else {
-      res.send("Not have this email!");
+      res.status(400).send("Not have this email!");
     }
   } catch (err) {
     console.error(err.message);

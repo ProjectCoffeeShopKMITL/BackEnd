@@ -6,6 +6,7 @@ const router = express.Router();
 router.get("/management/members", memberController.getAllMembers);
 router.get("/members/:id", memberController.getInfoMember); //id member
 router.post("/register", memberController.registerMember);
+router.post("/login", memberController.loginMember);
 
 router.get("/members/:id/membership", memberController.getMembership); //id member
 router.get("/members/:id/addresses", memberController.getAllAddresses); //id member

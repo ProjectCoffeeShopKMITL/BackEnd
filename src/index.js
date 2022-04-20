@@ -56,7 +56,8 @@ app.delete("/menu/:id", menuRoute);
 //member route
 app.get("/management/members", memberRoute);
 app.get("/members/:id", memberRoute);
-app.post("register", memberRoute);
+app.post("/register", memberRoute);
+app.post("/login", memberRoute);
 app.get("/members/:id/membership", memberRoute);
 
 //address

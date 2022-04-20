@@ -308,6 +308,7 @@ module.exports = {
   getAllMembers,
   getInfoMember,
   registerMember,
+  loginMember,
   getMembership,
 
   getAllAddresses,

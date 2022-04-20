@@ -160,12 +160,12 @@ const updateMenu = async (req, res) => {
     const updateData = await pool.query(
       `
       UPDATE menu
-      SET name = $1,
-          price = $2,
-          description = $3,
-          sale_to = $4,
+      SET name         = $1,
+          price        = $2,
+          description  = $3,
+          sale_to      = $4,
           is_recommend = $5,
-          type = $6
+          type         = $6
       WHERE id = $7
       `,
       [name, price, description, sale_to, is_recommend, type, id]

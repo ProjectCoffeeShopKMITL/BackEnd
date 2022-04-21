@@ -58,7 +58,7 @@ const getInfoMember = async (req, res) => {
 const registerMember = async (req, res) => {
   try {
     //get email, password from req.body
-    const { email, password } = req.body;
+    const { firstname, lastname, email, phone_no, password } = req.body;
 
     //if checkDuplicate.rows[0].count = 0 not dup, = 1 is dup
     const checkDuplicate = await pool.query(
@@ -73,10 +73,10 @@ const registerMember = async (req, res) => {
       //register member to database
       const registerMemberData = await pool.query(
         `
-          INSERT INTO member (email, password)
-          VALUES ($1, $2)
+          INSERT INTO member (firstname, lastname, email, phone_no, password)
+          VALUES ($1, $2, $3, $4, $5)
       `,
-        [email, password]
+        [firstname, lastname, email, phone_no, password]
       );
 
       res.json("Register Complete");

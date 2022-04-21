@@ -79,7 +79,7 @@ const registerMember = async (req, res) => {
         [email, password]
       );
 
-      res.send("Register Complete");
+      res.json("Register Complete");
     } else {
       res.status(400).send("email is Duplicate");
     }
@@ -231,7 +231,7 @@ const updateAddress = async (req, res) => {
     );
 
     //log complete
-    console.log("Update address complete");
+    res.json("updateAddress");
   } catch (err) {
     console.error(err.message);
   }
@@ -253,7 +253,7 @@ const deleteAddress = async (req, res) => {
       [id, id_address]
     );
     //log delete complete
-    console.log("DELETE address complete");
+    res.json("deleteAddress complete");
   } catch (err) {
     console.error(err.message);
   }

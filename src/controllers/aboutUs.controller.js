@@ -24,9 +24,7 @@ const updateInfo = async (req, res) => {
     //get new info
     const { content } = req.body;
     //get id from client
-    let { id } = req.params;
-    //parse id to int
-    id = parseInt(id);
+    const { id } = req.params;
 
     //update content
     const updateContent = await pool.query(
@@ -37,6 +35,8 @@ const updateInfo = async (req, res) => {
             `,
       [content, id]
     );
+
+    res.json("Update complete")
   } catch (err) {
     console.error(err.message);
   }

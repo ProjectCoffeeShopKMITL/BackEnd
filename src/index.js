@@ -40,18 +40,18 @@ app.get("/about_us", aboutUsRoute);
 app.put("/about_us/:id", aboutUsRoute);
 
 //gallery route
-app.get("/gallery", galleryRoute);
-app.post("/gallery", galleryRoute);
-app.put("/gallery/:id", galleryRoute);
-app.delete("/gallery/:id", galleryRoute);
+app.get("/gallerys", galleryRoute);
+app.post("/gallerys", galleryRoute);
+app.put("/gallerys/:id", galleryRoute);
+app.delete("/gallerys/:id", galleryRoute);
 
 //menu route
-app.get("/menu", menuRoute);
-app.get("/menu/:name", menuRoute);
-app.get("/menu/recommend", menuRoute);
-app.post("/menu", menuRoute);
-app.put("/menu/:id", menuRoute);
-app.delete("/menu/:id", menuRoute);
+app.get("/menus", menuRoute);
+app.get("/menus/:name", menuRoute);
+app.get("/menus/recommend", menuRoute);
+app.post("/menus", menuRoute);
+app.put("/menus/:id", menuRoute);
+app.delete("/menus/:id", menuRoute);
 
 //member route
 app.get("/management/members", memberRoute);

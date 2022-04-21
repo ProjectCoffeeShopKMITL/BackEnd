@@ -3,9 +3,9 @@ const galleryController = require("../controllers/gallery.controller");
 
 const router = express.Router();
 
-router.get("/gallery", galleryController.getGallery);
-router.post("/gallery", galleryController.addImage);
-router.put("/gallery/:id", galleryController.updateImg);
-router.delete("/gallery/:id", galleryController.deleteImg);
+router.get("/gallerys", galleryController.getGallery);
+router.post("/gallerys", galleryController.addImage);
+router.put("/gallerys/:id", galleryController.updateImg);
+router.delete("/gallerys/:id", galleryController.deleteImg);
 
 module.exports = router;

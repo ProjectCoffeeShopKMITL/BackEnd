@@ -34,6 +34,7 @@ const addImage = async (req, res) => {
             `,
       [img]
     );
+    res.json("addImage complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -44,9 +45,7 @@ const updateImg = async (req, res) => {
     //get new to update image
     const { img } = req.body;
     //get id from param
-    let { id } = req.params;
-    //parse to int
-    id = parseInt(id);
+    const { id } = req.params;
 
     //update image
     const updateImage = await pool.query(
@@ -57,6 +56,7 @@ const updateImg = async (req, res) => {
         `,
       [img, id]
     );
+    res.json("updateImage complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -66,9 +66,7 @@ const updateImg = async (req, res) => {
 const deleteImg = async (req, res) => {
   try {
     //get id from req.params
-    let { id } = req.params;
-    //parse id to int
-    id = parseInt(id);
+    const { id } = req.params;
 
     //delete photo in database
     const deleteImg = await pool.query(
@@ -77,8 +75,9 @@ const deleteImg = async (req, res) => {
         FROM gallery
         WHERE id = $1  
         `,
-        [id]
+      [id]
     );
+    res.json("deleteImg complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -88,5 +87,5 @@ module.exports = {
   getGallery,
   addImage,
   updateImg,
-  deleteImg
+  deleteImg,
 };

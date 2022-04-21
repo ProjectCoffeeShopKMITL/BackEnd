@@ -60,6 +60,8 @@ const addSection1 = async (req, res) => {
       `,
       [img]
     );
+
+    res.json("addSection1 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -70,9 +72,7 @@ const updateSection1 = async (req, res) => {
     //get req.body
     const { header, detail, img } = req.body;
     //get id from param
-    let { id } = req.params;
-    //parse(id) to int
-    id = parseInt(id);
+    const { id } = req.params;
 
     //update detail
     const updateDetail = await pool.query(
@@ -94,6 +94,8 @@ const updateSection1 = async (req, res) => {
      `,
       [img, id]
     );
+
+    res.json("updateSection1 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -102,9 +104,7 @@ const updateSection1 = async (req, res) => {
 const deleteSection1 = async (req, res) => {
   try {
     //get id from parameter
-    let { id } = req.params;
-    //turn id(type:string) to id(int)
-    id = parseInt(id);
+    const { id } = req.params;
 
     //delete photo
     const deletePhoto = await pool.query(
@@ -125,8 +125,7 @@ const deleteSection1 = async (req, res) => {
       `,
       [id]
     );
-
-    // console.log("DELETE SUCCESS");
+    res.json("deleteSection1 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -168,6 +167,8 @@ const addSection2 = async (req, res) => {
       `,
       [header, detail]
     );
+
+    res.json("addSection2 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -178,9 +179,7 @@ const updateSection2 = async (req, res) => {
     //get req.body
     const { header, detail } = req.body;
     //get id from req.param
-    let { id } = req.params;
-    //parse(id) to int
-    id = parseInt(id);
+    const { id } = req.params;
 
     //update header, detail
     const updateDetail = await pool.query(
@@ -192,6 +191,8 @@ const updateSection2 = async (req, res) => {
     `,
       [header, detail, id]
     );
+
+    res.json("updateSection2 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -200,9 +201,7 @@ const updateSection2 = async (req, res) => {
 const deleteSection2 = async (req, res) => {
   try {
     //get id
-    let { id } = req.params;
-    //parse(id) to int
-    id = parseInt(id);
+    const { id } = req.params;
 
     //delete info
     const deleteInfo = await pool.query(
@@ -213,6 +212,8 @@ const deleteSection2 = async (req, res) => {
       `,
       [id]
     );
+
+    res.json("deleteSection2 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -270,6 +271,8 @@ const addSection3 = async (req, res) => {
       `,
       [img]
     );
+
+    res.json("addSection3 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -279,8 +282,6 @@ const updateSection3 = async (req, res) => {
   try {
     //get id
     const { id } = req.params;
-    //parse id to int
-    id = parseInt(id);
 
     //get req.body
     const { header, img } = req.body;
@@ -304,6 +305,7 @@ const updateSection3 = async (req, res) => {
       `,
       [img, id]
     );
+    res.json("updateSection3 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -313,8 +315,6 @@ const deleteSection3 = async (req, res) => {
   try {
     //get id from req.params
     const { id } = req.params;
-    //id parse to int
-    id = parseInt(id);
 
     //delete photo first
     const deletePhoto = await pool.query(
@@ -335,6 +335,7 @@ const deleteSection3 = async (req, res) => {
       `,
       [id]
     );
+    res.json("deleteSection3 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -376,6 +377,8 @@ const addSection4 = async (req, res) => {
       `,
       [detail]
     );
+
+    res.json("addSection4 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -385,8 +388,6 @@ const updateSection4 = async (req, res) => {
   try {
     //get id from req.params
     const { id } = req.params;
-    //parse id to int
-    id = parseInt(id);
     //get detail(caption) from req.body
     const { detail } = req.body;
 
@@ -399,6 +400,7 @@ const updateSection4 = async (req, res) => {
       `,
       [detail, id]
     );
+    res.json("updateSection4 complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -408,8 +410,6 @@ const deleteSection4 = async (req, res) => {
   try {
     //get id from req.param
     const { id } = req.params;
-    //parse id to int
-    id = parseInt(id);
 
     //delete caption
     const deleteCaption = await pool.query(
@@ -420,6 +420,7 @@ const deleteSection4 = async (req, res) => {
       `,
       [id]
     );
+    res.json("deleteSection4 complete");
   } catch (err) {
     console.error(err.message);
   }

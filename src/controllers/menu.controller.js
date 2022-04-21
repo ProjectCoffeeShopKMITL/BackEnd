@@ -1,6 +1,6 @@
 const pool = require("../db");
 
-//all menu '/menu'
+//all menu '/menus'
 //name, is_recommend, type, rate, price, image
 const getAllMenu = async (req, res) => {
   try {
@@ -31,7 +31,7 @@ const getAllMenu = async (req, res) => {
   }
 };
 
-//get a detail of one menu '/menu/:name'
+//get a detail of one menu '/menus/:name'
 const getDetailMenu = async (req, res) => {
   try {
     //get name from req.params
@@ -65,7 +65,7 @@ const getDetailMenu = async (req, res) => {
   }
 };
 
-//get recommend menu '/menu/recommend'
+//get recommend menu '/menus/recommend'
 const getRecommendMenu = async (req, res) => {
   try {
     //get recommend menu limit 4 menu order by Random
@@ -100,7 +100,7 @@ const getRecommendMenu = async (req, res) => {
   }
 };
 
-//POST method add new menu and new image menu(test object image) '/menu'
+//POST method add new menu and new image menu(test object image) '/menus'
 const addMenu = async (req, res) => {
   try {
     //get from client(req.body)
@@ -128,10 +128,9 @@ const addMenu = async (req, res) => {
     getIDnewest = getIDnewest.rows[0].id;
 
     //get object image from req.body.image
-    // image["image1","image2","image3","image4"]
-    //this is test
-    const image = ["image1", "image2", "image3", "image4"];
+    // const image = ["image1", "image2", "image3", "image4"];
 
+    const { image } = req.body;
     //for loop to store all image that client send to back
     for (let i = 0; i < image.length; i++) {
       const storeEachImage = await pool.query(
@@ -142,17 +141,19 @@ const addMenu = async (req, res) => {
         [image[i], getIDnewest]
       );
     }
+
+    res.json("addMenu complete");
   } catch (err) {
     console.error(err.message);
   }
 };
 
-//PUT method update menu and image menu(test object image) 'menu/:id'
+//PUT method update menu and image menu(test object image) 'menus/:id'
 const updateMenu = async (req, res) => {
   try {
     //get menu id from client (req.params)
     const { id } = req.params;
-    
+
     //get new update from client (req.body)
     const { name, price, description, sale_to, is_recommend, type } = req.body;
 
@@ -171,49 +172,48 @@ const updateMenu = async (req, res) => {
       [name, price, description, sale_to, is_recommend, type, id]
     );
 
-    // test object image 
-    const image = [{
-      "id": 5,
-      "img": "new image1"
-    },
-    {      
-      "id": 6,
-      "img": "new image2"
-    },
-    {
-      "id": 7,
-      "img": "new image3"
-    },
-    {
-      "id": 8,
-      "img": "new image4"
-    }
-  ]
+    // test object image
+    //   const image = [{
+    //     "id": 5,
+    //     "img": "new image1"
+    //   },
+    //   {
+    //     "id": 6,
+    //     "img": "new image2"
+    //   },
+    //   {
+    //     "id": 7,
+    //     "img": "new image3"
+    //   },
+    //   {
+    //     "id": 8,
+    //     "img": "new image4"
+    //   }
+    // ]
+    const { image } = req.body;
 
-  //loop for update image
-  for(let i=0; i<image.length; i++){
-    const updateImgData = await pool.query(
-      `
+    //loop for update image
+    for (let i = 0; i < image.length; i++) {
+      const updateImgData = await pool.query(
+        `
       UPDATE photo_menu
       SET img = $1
       WHERE id = $2
       `,
-      [image[i].img , image[i].id]
+        [image[i].img, image[i].id]
       );
-  };
-  console.log('UPDATE complete')
+    }
+    res.json("updateMenu complete");
   } catch (err) {
     console.error(err.message);
   }
 };
 
-//Delete method 'menu/:id'
+//Delete method 'menus/:id'
 const deleteMenu = async (req, res) => {
   try {
     //get id menu from params
-    let { id } = req.params;
-    //parse to int
-    id = parseInt(id);
+    const { id } = req.params;
 
     //delete photo menu from database
     const deletePhotoMenuData = await pool.query(
@@ -242,8 +242,7 @@ const deleteMenu = async (req, res) => {
       `,
       [id]
     );
-    //log finish delete
-    console.log("DELETE MENU COMPLETE");
+    res.json("deleteMenu complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -253,7 +252,7 @@ module.exports = {
   getAllMenu,
   getDetailMenu,
   getRecommendMenu,
-  addMenu,  
+  addMenu,
   updateMenu,
-  deleteMenu
+  deleteMenu,
 };

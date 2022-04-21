@@ -7,6 +7,8 @@ const getAllMenu = async (req, res) => {
     const getAll = await pool.query(
       `
       SELECT  m.name,
+              m.price,
+              m.sale_to,
               m.is_recommend,
               m.type, 
               m.create_at,

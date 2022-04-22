@@ -3,15 +3,42 @@ const pool = require("../db");
 // (GET) get all orders in database '/orders'
 const getAllOrders = async (req, res) => {
   try {
-
     const getAllOrdersData = await pool.query(
       `
-      
+      SELECT *
+      FROM orders AS o
       `
-      );
+    );
 
+    const result = [];
 
+    for (const each of getAllOrdersData.rows) {
+      const menu_array_result = [];
+      for (const menu of each.menu_array) {
+        const [menu_id, quantity] = menu;
 
+        const getInfoData = await pool.query(
+          `
+            SELECT *
+            FROM menu AS m
+              LEFT JOIN (
+                SELECT DISTINCT ON (pm.menu_id) pm.id, pm.img, pm.menu_id
+                FROM photo_menu AS pm
+                ORDER BY pm.menu_id, pm.id
+              ) pm ON pm.menu_id = m.id
+            WHERE m.id = $1
+          `,
+          [menu_id]
+        );
+        menu_array_result.push({
+          ...getInfoData.rows[0],
+          quantity: parseInt(quantity),
+        });
+      }
+      result.push({ ...each, menu_array: menu_array_result });
+    }
+
+    res.send(result);
   } catch (err) {
     console.error(err.message);
   }
@@ -51,11 +78,12 @@ const getOrder = async (req, res) => {
           `,
           [menu_id]
         );
-
-        menu_array_result.push({ ...getInfoData.rows[0], quantity:parseInt(quantity) });
+        menu_array_result.push({
+          ...getInfoData.rows[0],
+          quantity: parseInt(quantity),
+        });
       }
-
-      result.push({...each, menu_array:menu_array_result});
+      result.push({ ...each, menu_array: menu_array_result });
     }
 
     res.send(result);

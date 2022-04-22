@@ -73,8 +73,8 @@ app.get("/members/:id/coupons", memberRoute);
 //order route
 app.get("/orders", orderRoute);
 app.get("/orders/:firstname", orderRoute);
+app.get("/order/:id", orderRoute);
 app.post("/order", orderRoute);
-
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

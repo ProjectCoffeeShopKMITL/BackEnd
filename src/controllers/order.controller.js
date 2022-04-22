@@ -91,9 +91,47 @@ const getOrder = async (req, res) => {
     console.error(err.message);
   }
 };
-// (GET) list of menu '/orders/:id'
+// (GET) list of menu '/order/:id'
 const getListMenu = async (req, res) => {
+  console.log("test");
   try {
+    const getAllOrdersData = await pool.query(
+      `
+      SELECT *
+      FROM orders AS o
+      WHERE o.id = $1
+      `,
+      [req.params.id]
+    );
+
+    const result = [];
+
+    for (const each of getAllOrdersData.rows) {
+      const menu_array_result = [];
+      for (const menu of each.menu_array) {
+        const [menu_id, quantity] = menu;
+
+        const getInfoData = await pool.query(
+          `
+            SELECT *
+            FROM menu AS m
+              LEFT JOIN (
+                SELECT DISTINCT ON (pm.menu_id) pm.id, pm.img, pm.menu_id
+                FROM photo_menu AS pm
+                ORDER BY pm.menu_id, pm.id
+              ) pm ON pm.menu_id = m.id
+            WHERE m.id = $1
+          `,
+          [menu_id]
+        );
+        menu_array_result.push({
+          ...getInfoData.rows[0],
+          quantity: parseInt(quantity),
+        });
+      }
+      result.push({ ...each, menu_array: menu_array_result });
+    }
+    res.send(result);
   } catch (err) {
     console.error(err.message);
   }
@@ -165,6 +203,7 @@ const addOrder = async (req, res) => {
                   $8,
                   $9,
                   $10)
+          RETURNING id
       `,
       [
         firstname,
@@ -180,7 +219,8 @@ const addOrder = async (req, res) => {
       ]
     );
 
-    res.send("addOrder complete");
+    console.log(addOrderData);
+    res.send({ id: addOrderData.rows[0].id });
   } catch (err) {
     console.error(err.message);
   }
@@ -190,4 +230,5 @@ module.exports = {
   getAllOrders,
   getOrder,
   addOrder,
+  getListMenu,
 };

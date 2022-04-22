@@ -8,6 +8,7 @@ const aboutUsRoute = require("./routes/aboutUs");
 const galleryRoute = require("./routes/gallery");
 const menuRoute = require("./routes/menu");
 const memberRoute = require("./routes/member");
+const orderRoute = require("./routes/order");
 
 //middleware
 app.use(cors());
@@ -68,6 +69,12 @@ app.delete("/members/:id/addresses/:id_address", memberRoute);
 app.post("/members/:id/addresses", memberRoute);
 
 app.get("/members/:id/coupons", memberRoute);
+
+//order route
+app.get("/orders", orderRoute);
+app.get("/orders/:firstname", orderRoute);
+app.post("/order", orderRoute);
+
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

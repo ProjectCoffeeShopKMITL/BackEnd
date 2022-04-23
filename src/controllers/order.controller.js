@@ -352,11 +352,12 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-//update status order '/orders/:id/status/:status_now'
+//update status order '/orders/:id/status'
 const updateStatusOrder = async (req, res) => {
   try {
-    const { id, status_now } = req.params;
-
+    const { id } = req.params;
+    const { status_now } = req.body;
+    
     const updateStatusData = await pool.query(
       `
       UPDATE orders_status

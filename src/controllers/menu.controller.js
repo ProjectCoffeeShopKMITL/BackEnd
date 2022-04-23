@@ -51,17 +51,19 @@ const getAllMenu = async (req, res) => {
               ) s ON s.id = ms.stock_id
       `
     );
-    
-    getAll.rows.forEach( (data) => {
+
+    getAll.rows.forEach((data) => {
       data.ingredients = [];
     });
 
     for (const each of getAllRecipesData.rows) {
       for (const eachData of getAll.rows) {
-        if (each.menu_id != eachData.id) {continue}
+        if (each.menu_id != eachData.id) {
+          continue;
+        }
 
-          console.log(each.menu_id, each.ingredient_name);
-          eachData.ingredients.push(each);
+        console.log(each.menu_id, each.ingredient_name);
+        eachData.ingredients.push(each);
       }
     }
     console.log(getAllRecipesData.rows);
@@ -185,6 +187,22 @@ const addMenu = async (req, res) => {
       );
     }
 
+    // ingredients = [ {stock_id, quantity}, {} , ...]
+    // add to menu_stock
+    const { ingredients } = req.body;
+
+    //loop insert into 'menu_stocks'
+    for (const each in ingredients) {
+      //add to database
+      const deleteMenu_stocks = await pool.query(
+        `
+            INSERT INTO menu_stocks (menu_id, stock_id, quantity)
+            VALUES ($1, $2, $3)
+        `,
+        [getIDnewest, each.stock_id, each.quantity]
+      );
+    }
+
     res.json("addMenu complete");
   } catch (err) {
     console.error(err.message);
@@ -246,6 +264,31 @@ const updateMenu = async (req, res) => {
         [image[i].img, image[i].id]
       );
     }
+
+    // ingredients = [ { stock_id, quantity}, {} , ...]
+    // add to menu_stock
+    const { ingredients } = req.body;
+    
+    //delete old menu_stock record database
+    const deleteMenu_stocks = await pool.query(
+      `
+          DELETE FROM menu_stocks 
+          WHERE menu_id = $1
+      `,
+      [id]
+    );
+
+    //loop insert into menu_stocks database
+    for (const eachData in ingredients){
+      const addMenu_stock = await pool.query(
+        `
+            INSERT INTO menu_stocks ( menu_id, stock_id, quantity)
+            VALUES ( $1, $2, $3)
+        `,
+        [id, eachData.stock_id, eachData.quantity]
+        ); 
+    }
+
     res.json("updateMenu complete");
   } catch (err) {
     console.error(err.message);

@@ -9,6 +9,7 @@ const galleryRoute = require("./routes/gallery");
 const menuRoute = require("./routes/menu");
 const memberRoute = require("./routes/member");
 const orderRoute = require("./routes/order");
+const stockRoute = require("./routes/stock");
 
 //middleware
 app.use(cors());
@@ -80,7 +81,10 @@ app.delete("/orders/:id", orderRoute);
 app.put("/orders/:id/status/:status_now", orderRoute);
 
 //stock route
-
+app.get("/stocks", stockRoute);
+app.post("/stocks/add", stockRoute);
+app.post("/stocks/update", stockRoute);
+app.post("/stocks/calculate", stockRoute);
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

@@ -241,7 +241,7 @@ const addOrder = async (req, res) => {
       `
     );
     //parse object(getIDnewest) to int for use menu.id to store image
-    getIDnewest = parseINT(getIDnewest.rows[0].id);
+    getIDnewest = parseInt(getIDnewest.rows[0].id);
 
     const addOrderStatusData = await pool.query(
       `

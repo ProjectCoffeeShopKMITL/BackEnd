@@ -9,6 +9,7 @@ const getAllMenu = async (req, res) => {
       SELECT  m.name,
               m.id,
               m.price,
+              m.description,
               m.sale_to,
               m.is_recommend,
               m.type, 

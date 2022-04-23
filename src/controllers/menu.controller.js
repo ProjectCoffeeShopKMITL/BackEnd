@@ -62,11 +62,9 @@ const getAllMenu = async (req, res) => {
           continue;
         }
 
-        console.log(each.menu_id, each.ingredient_name);
         eachData.ingredients.push(each);
       }
     }
-    console.log(getAllRecipesData.rows);
     res.send(getAll.rows);
 
     // res.json(getAll.rows);
@@ -192,7 +190,7 @@ const addMenu = async (req, res) => {
     const { ingredients } = req.body;
 
     //loop insert into 'menu_stocks'
-    for (const each in ingredients) {
+    for (const each of ingredients) {
       //add to database
       const deleteMenu_stocks = await pool.query(
         `
@@ -268,7 +266,7 @@ const updateMenu = async (req, res) => {
     // ingredients = [ { stock_id, quantity}, {} , ...]
     // add to menu_stock
     const { ingredients } = req.body;
-    
+
     //delete old menu_stock record database
     const deleteMenu_stocks = await pool.query(
       `
@@ -279,14 +277,14 @@ const updateMenu = async (req, res) => {
     );
 
     //loop insert into menu_stocks database
-    for (const eachData in ingredients){
+    for (const eachData of ingredients) {
       const addMenu_stock = await pool.query(
         `
             INSERT INTO menu_stocks ( menu_id, stock_id, quantity)
             VALUES ( $1, $2, $3)
         `,
         [id, eachData.stock_id, eachData.quantity]
-        ); 
+      );
     }
 
     res.json("updateMenu complete");

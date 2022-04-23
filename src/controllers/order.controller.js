@@ -105,7 +105,6 @@ const getOrder = async (req, res) => {
 };
 // (GET) list of menu '/order/:id'
 const getListMenu = async (req, res) => {
-  console.log("test");
   try {
     const getAllOrdersData = await pool.query(
       `
@@ -251,7 +250,6 @@ const addOrder = async (req, res) => {
       [getIDnewest]
     );
 
-    console.log(addOrderData);
     res.send({ id: addOrderData.rows[0].id });
   } catch (err) {
     console.error(err.message);
@@ -357,7 +355,7 @@ const updateStatusOrder = async (req, res) => {
   try {
     const { id } = req.params;
     const { status_now } = req.body;
-    
+
     const updateStatusData = await pool.query(
       `
       UPDATE orders_status
@@ -367,7 +365,7 @@ const updateStatusOrder = async (req, res) => {
       [status_now, id]
     );
 
-    res.send("UpdateStatusOrder ID: "+ id);
+    res.send("UpdateStatusOrder ID: " + id);
   } catch (err) {
     console.error(err.message);
   }
@@ -381,5 +379,5 @@ module.exports = {
   updateOrder,
   deleteOrder,
 
-  updateStatusOrder
+  updateStatusOrder,
 };

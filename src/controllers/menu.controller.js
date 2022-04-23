@@ -29,17 +29,6 @@ const getAllMenu = async (req, res) => {
       `
     );
 
-    //   {
-    //     "menu_id": 17,
-    //     "ingredient_name": "expresso(shot)",
-    //     "use_quantity": 2
-    //    }
-    //   {
-    //     "menu_id": 17,
-    //     "ingredient_name": "expresso(shot)",
-    //     "use_quantity": 2
-    //    }
-
     //get all recipe from database
     const getAllRecipesData = await pool.query(
       `
@@ -170,9 +159,6 @@ const addMenu = async (req, res) => {
     //parse object(getIDnewest) to int for use menu.id to store image
     getIDnewest = getIDnewest.rows[0].id;
 
-    //get object image from req.body.image
-    // const image = ["image1", "image2", "image3", "image4"];
-
     const { image } = req.body;
     //for loop to store all image that client send to back
     for (let i = 0; i < image.length; i++) {
@@ -231,24 +217,6 @@ const updateMenu = async (req, res) => {
       [name, price, description, sale_to, is_recommend, type, id]
     );
 
-    // test object image
-    //   const image = [{
-    //     "id": 5,
-    //     "img": "new image1"
-    //   },
-    //   {
-    //     "id": 6,
-    //     "img": "new image2"
-    //   },
-    //   {
-    //     "id": 7,
-    //     "img": "new image3"
-    //   },
-    //   {
-    //     "id": 8,
-    //     "img": "new image4"
-    //   }
-    // ]
     const { image } = req.body;
 
     //loop for update image

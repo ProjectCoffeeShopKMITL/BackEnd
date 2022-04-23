@@ -26,7 +26,7 @@ const addNewStock = async (req, res) => {
     //get stocks = [{ingredient_name, quantity}, ...]
     const { stocks } = req.body;
     //add new stock to stocks table
-    for (const eachStock in stocks) {
+    for (const eachStock of stocks) {
       //add new stock
       const addStockData = await pool.query(
         `
@@ -103,7 +103,7 @@ const calculateStocks = async (req, res) => {
     const { usedStocks } = req.body;
 
     //loop for calculate stock
-    for (const eachData in usedStocks) {
+    for (const eachData of usedStocks) {
       //update stock in database
       const updateStocks = await pool.query(
         `
@@ -131,5 +131,5 @@ module.exports = {
   getAllStocks,
   addNewStock,
   addQuantityStocks,
-  calculateStocks
+  calculateStocks,
 };

@@ -219,14 +219,21 @@ const updateMenu = async (req, res) => {
     );
 
     const { image } = req.body;
-
+    
+    const deletePhotoData = await pool.query(
+      `
+          DELETE FROM photo_menu
+          WHERE menu_id = $1
+      `,
+      [id]
+      );
+    
     //loop for update image
     for (let i = 0; i < image.length; i++) {
       const updateImgData = await pool.query(
         `
-      UPDATE photo_menu
-      SET img = $1
-      WHERE id = $2
+            INSERT INTO photo_menu ( img, menu_id)
+            VALUES ( $1, $2)
       `,
         [image[i].img, image[i].id]
       );

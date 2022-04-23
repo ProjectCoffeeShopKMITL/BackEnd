@@ -28,7 +28,46 @@ const getAllMenu = async (req, res) => {
       ) r ON m.id = r.menu_id
       `
     );
-    res.json(getAll.rows);
+
+    //   {
+    //     "menu_id": 17,
+    //     "ingredient_name": "expresso(shot)",
+    //     "use_quantity": 2
+    //    }
+    //   {
+    //     "menu_id": 17,
+    //     "ingredient_name": "expresso(shot)",
+    //     "use_quantity": 2
+    //    }
+
+    //get all recipe from database
+    const getAllRecipesData = await pool.query(
+      `
+          SELECT ms.menu_id, s.ingredient_name, ms.quantity::float AS use_quantity, s.id AS stock_id
+          FROM menu_stocks AS ms
+              LEFT JOIN (
+                SELECT s.id, s.ingredient_name, s.quantity
+                FROM stocks AS s
+              ) s ON s.id = ms.stock_id
+      `
+    );
+    
+    getAll.rows.forEach( (data) => {
+      data.ingredients = [];
+    });
+
+    for (const each of getAllRecipesData.rows) {
+      for (const eachData of getAll.rows) {
+        if (each.menu_id != eachData.id) {continue}
+
+          console.log(each.menu_id, each.ingredient_name);
+          eachData.ingredients.push(each);
+      }
+    }
+    console.log(getAllRecipesData.rows);
+    res.send(getAll.rows);
+
+    // res.json(getAll.rows);
   } catch (err) {
     console.error(err.message);
   }
@@ -62,6 +101,7 @@ const getDetailMenu = async (req, res) => {
       `,
       [name]
     );
+
     res.json(getDetail.rows);
   } catch (err) {
     console.error(err.message);

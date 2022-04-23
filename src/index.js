@@ -79,6 +79,9 @@ app.put("/orders/:id", orderRoute);
 app.delete("/orders/:id", orderRoute);
 app.put("/orders/:id/status/:status_now", orderRoute);
 
+//stock route
+
+
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {
   console.log("Server has started on PORT 5001");

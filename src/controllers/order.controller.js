@@ -5,8 +5,14 @@ const getAllOrders = async (req, res) => {
   try {
     const getAllOrdersData = await pool.query(
       `
-      SELECT *
+      SELECT  o.id , firstname, lastname, phone_no, address, note,
+      order_timestamptz, menu_array, subtotal, discount,
+      shipping, total, os.id AS status_id, status
       FROM orders AS o
+        LEFT JOIN (
+          SELECT os.id, os.order_id, os.status::int
+          FROM orders_status AS os
+        ) os ON o.id = os.order_id
       `
     );
 
@@ -51,8 +57,14 @@ const getOrder = async (req, res) => {
 
     const getOrderData = await pool.query(
       `
-      SELECT *
+      SELECT o.id, firstname, lastname, phone_no, address, note,
+              order_timestamptz, menu_array, subtotal, discount,
+              shipping, total, os.id AS status_id, status
       FROM orders AS o
+        LEFT JOIN (
+          SELECT os.id, os.order_id, os.status::int
+          FROM orders_status AS os
+        ) os ON o.id = os.order_id
       WHERE o.firstname = $1
       `,
       [firstname]
@@ -178,7 +190,7 @@ const addOrder = async (req, res) => {
     text = text.slice(0, -1);
     text += "}";
 
-    //add detail except menu_array
+    //add detail
     const addOrderData = await pool.query(
       `
           INSERT INTO orders( firstname,
@@ -219,8 +231,142 @@ const addOrder = async (req, res) => {
       ]
     );
 
+    //get newest id from database table(menu)
+    let getIDnewest = await pool.query(
+      `
+            SELECT id::int
+            FROM orders
+            ORDER BY id DESC
+            LIMIT 1
+      `
+    );
+    //parse object(getIDnewest) to int for use menu.id to store image
+    getIDnewest = parseINT(getIDnewest.rows[0].id);
+
+    const addOrderStatusData = await pool.query(
+      `
+      INSERT INTO orders_status (order_id, status)
+      VALUES ($1, 1)
+      `,
+      [getIDnewest]
+    );
+
     console.log(addOrderData);
     res.send({ id: addOrderData.rows[0].id });
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+// (PUT) update order '/orders/:id'
+const updateOrder = async (req, res) => {
+  try {
+    //get order id to update that order_id
+    const { id } = req.params;
+
+    //get detail order from client when order req.body
+    const {
+      firstname,
+      lastname,
+      phone_no,
+      address,
+      note,
+      subtotal,
+      discount,
+      shipping,
+      total,
+    } = req.body;
+
+    let { menu_array } = req.body;
+
+    //tranform menu_array for insert into menu_array column
+    let text = "{";
+    for (let i = 0; i < menu_array.length; i++) {
+      text += "{";
+      for (let j = 0; j < menu_array[i].length; j++) {
+        text += '"';
+        text += menu_array[i][j];
+        text += '",';
+      }
+      text = text.slice(0, -1);
+      text += "},";
+    }
+    text = text.slice(0, -1);
+    text += "}";
+
+    //update data to order (with order_id)
+    const updateOrderData = await pool.query(
+      `
+          UPDATE orders
+          SET firstname = $1,
+              lastname = $2,
+              phone_no = $3,
+              address = $4,
+              note = $5,
+              order_timestamptz = NOW(),
+              menu_array = $6,
+              subtotal = $7,
+              discount = $8,
+              shipping = $9,
+              total = $10
+          WHERE id = $11;
+      `,
+      [
+        firstname,
+        lastname,
+        phone_no,
+        address,
+        note,
+        menu_array,
+        subtotal,
+        discount,
+        shipping,
+        total,
+        id,
+      ]
+    );
+
+    res.send("updateOrder complete");
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+// (DELETE) delete unwanted order '/orders/:id'
+const deleteOrder = async (req, res) => {
+  try {
+    //get order id to delete
+    const { id } = req.params;
+
+    const deleteOrderData = await pool.query(
+      `
+          DELETE
+          FROM orders
+          WHERE id = $1;
+      `,
+      [id]
+    );
+    res.send("deleteOrder Complete");
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+//update status order '/orders/:id/status/:status_now'
+const updateStatusOrder = async (req, res) => {
+  try {
+    const { id, status_now } = req.params;
+
+    const updateStatusData = await pool.query(
+      `
+      UPDATE orders_status
+      SET status = $1
+      WHERE order_id = $2
+      `,
+      [status_now, id]
+    );
+
+    res.send("UpdateStatusOrder ID: "+ id);
   } catch (err) {
     console.error(err.message);
   }
@@ -231,4 +377,8 @@ module.exports = {
   getOrder,
   addOrder,
   getListMenu,
+  updateOrder,
+  deleteOrder,
+
+  updateStatusOrder
 };

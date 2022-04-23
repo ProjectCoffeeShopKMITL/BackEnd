@@ -75,6 +75,9 @@ app.get("/orders", orderRoute);
 app.get("/orders/:firstname", orderRoute);
 app.get("/order/:id", orderRoute);
 app.post("/order", orderRoute);
+app.put("/orders/:id", orderRoute);
+app.delete("/orders/:id", orderRoute);
+app.put("/orders/:id/status/:status_now", orderRoute);
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

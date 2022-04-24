@@ -59,13 +59,13 @@ const getOrderForMember = async (req, res) => {
       `
       SELECT o.id, firstname, lastname, phone_no, address, note,
               order_timestamptz, menu_array, subtotal, discount,
-              shipping, total, os.id AS status_id, status
+              shipping, total, os.id AS status_id, status, o.member_id
       FROM orders AS o
         LEFT JOIN (
           SELECT os.id, os.order_id, os.status::int
           FROM orders_status AS os
         ) os ON o.id = os.order_id
-      WHERE o.id = $1
+      WHERE o.member_id = $1
       `,
       [id]
     );

@@ -3,8 +3,8 @@
     "sql-file" : true,
     "pg": {
     "driver": "pg",
-    "user": "postgres",
-    "password": "post1234",
+    "user": "day",
+    "password": "",
     "host": "localhost",
     "database": "coffeeshop",
     "port": "5432"

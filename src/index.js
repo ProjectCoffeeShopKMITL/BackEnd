@@ -73,7 +73,8 @@ app.get("/members/:id/coupons", memberRoute);
 
 //order route
 app.get("/orders", orderRoute);
-app.get("/orders/:firstname", orderRoute);
+app.get("/orders/member/:id", orderRoute);
+app.get("/orders/guest/:firstname", orderRoute);
 app.get("/order/:id", orderRoute);
 app.post("/order", orderRoute);
 app.put("/orders/:id", orderRoute);

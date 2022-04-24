@@ -50,8 +50,62 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-// (GET) get a order in database '/orders/:firstname'
-const getOrder = async (req, res) => {
+// (GET) get a order in database '/orders/member/:id'
+const getOrderForMember = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const getOrderData = await pool.query(
+      `
+      SELECT o.id, firstname, lastname, phone_no, address, note,
+              order_timestamptz, menu_array, subtotal, discount,
+              shipping, total, os.id AS status_id, status
+      FROM orders AS o
+        LEFT JOIN (
+          SELECT os.id, os.order_id, os.status::int
+          FROM orders_status AS os
+        ) os ON o.id = os.order_id
+      WHERE o.id = $1
+      `,
+      [id]
+    );
+
+    const result = [];
+
+    for (const each of getOrderData.rows) {
+      const menu_array_result = [];
+      for (const menu of each.menu_array) {
+        const [menu_id, quantity] = menu;
+
+        const getInfoData = await pool.query(
+          `
+            SELECT *
+            FROM menu AS m
+              LEFT JOIN (
+                SELECT DISTINCT ON (pm.menu_id) pm.id, pm.img, pm.menu_id
+                FROM photo_menu AS pm
+                ORDER BY pm.menu_id, pm.id
+              ) pm ON pm.menu_id = m.id
+            WHERE m.id = $1
+          `,
+          [menu_id]
+        );
+        menu_array_result.push({
+          ...getInfoData.rows[0],
+          quantity: parseInt(quantity),
+        });
+      }
+      result.push({ ...each, menu_array: menu_array_result });
+    }
+
+    res.send(result);
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+// (GET) get a order in database '/orders/guest/:firstname'
+const getOrderForGuest = async (req, res) => {
   try {
     const { firstname } = req.params;
 
@@ -103,6 +157,7 @@ const getOrder = async (req, res) => {
     console.error(err.message);
   }
 };
+
 // (GET) list of menu '/order/:id'
 const getListMenu = async (req, res) => {
   try {
@@ -373,11 +428,11 @@ const updateStatusOrder = async (req, res) => {
 
 module.exports = {
   getAllOrders,
-  getOrder,
+  getOrderForGuest,
+  getOrderForMember,
   addOrder,
   getListMenu,
   updateOrder,
   deleteOrder,
-
   updateStatusOrder,
 };

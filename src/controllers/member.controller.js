@@ -107,21 +107,28 @@ const loginMember = async (req, res) => {
       //get info from database
       const getMemberData = await pool.query(
         `
-            SELECT m.id, m.firstname, m.lastname, m.email, m.phone_no, m.gender, m.birthdate, pm.img, 
-                   ma.address, ma.is_main, ma.firstname, ma.lastname, ma.phone_no, ma.note
+            SELECT m.id, m.firstname, m.lastname, m.email, m.phone_no, m.gender, m.birthdate, pm.img
             FROM member AS m
                      LEFT JOIN (
                 SELECT pm.member_id, pm.img
                 FROM photo_member AS pm
             ) pm ON m.id = pm.member_id
-                     LEFT JOIN (
-                SELECT *
-                FROM member_address AS ma
-            ) ma ON m.id = ma.member_id
             WHERE m.email = $1
             `,
         [email]
       );
+
+      const getAllAddressOneMemberData = await pool.query(
+        `
+            SELECT *
+            FROM member_address AS ma
+            WHERE ma.member_id = $1
+        `,
+        [getMemberData.rows[0].id]
+      );
+
+      getMemberData.rows[0].address = getAllAddressOneMemberData.rows;
+
       res.send(getMemberData.rows);
     } else {
       res.status(400).send("Not have this email!");

@@ -175,7 +175,7 @@ const getListMenu = async (req, res) => {
     for (const each of getAllOrdersData.rows) {
       const menu_array_result = [];
       for (const menu of each.menu_array) {
-        const [menu_id, quantity] = menu;
+        const [menu_id, quantity, note] = menu;
 
         const getInfoData = await pool.query(
           `
@@ -193,6 +193,7 @@ const getListMenu = async (req, res) => {
         menu_array_result.push({
           ...getInfoData.rows[0],
           quantity: parseInt(quantity),
+          note: note,
         });
       }
       result.push({ ...each, menu_array: menu_array_result });
@@ -208,6 +209,7 @@ const addOrder = async (req, res) => {
   try {
     //get detail order from client when order req.body
     const {
+      member_id,
       firstname,
       lastname,
       phone_no,
@@ -222,12 +224,12 @@ const addOrder = async (req, res) => {
     let { menu_array } = req.body;
 
     // let menu_array = [
-    //   ["7", "2"],
-    //   ["16", "3"],
+    //   ["7", "2", "note"],
+    //   ["16", "3", "note"],
     // ];
     // menu 1, menu 2, ....
-    // '{ {"menu_id","quantity"}, {} , ...}'
-    // '{ {"1", "2"}, {"2", "1"} }'
+    // '{ {"menu_id","quantity", "note"}, {} , ...}'
+    // '{ {"1", "2", "note"}, {"2", "1", "note"} }'
 
     //tranform menu_array for insert into menu_array column
     let text = "{";
@@ -248,6 +250,7 @@ const addOrder = async (req, res) => {
     const addOrderData = await pool.query(
       `
           INSERT INTO orders( firstname,
+                              
                               lastname,
                               phone_no,
                               address,
@@ -257,7 +260,8 @@ const addOrder = async (req, res) => {
                               subtotal,
                               discount,
                               shipping,
-                              total)
+                              total,
+                              member_id)
           VALUES ($1,
                   $2,
                   $3,
@@ -268,7 +272,8 @@ const addOrder = async (req, res) => {
                   $7,
                   $8,
                   $9,
-                  $10)
+                  $10,
+                  $11)
           RETURNING id
       `,
       [
@@ -282,6 +287,7 @@ const addOrder = async (req, res) => {
         discount,
         shipping,
         total,
+        member_id,
       ]
     );
 

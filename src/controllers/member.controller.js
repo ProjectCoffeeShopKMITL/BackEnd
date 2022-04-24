@@ -107,12 +107,17 @@ const loginMember = async (req, res) => {
       //get info from database
       const getMemberData = await pool.query(
         `
-            SELECT m.id, m.firstname, m.lastname, m.email, m.phone_no, m.gender, m.birthdate, pm.img
+            SELECT m.id, m.firstname, m.lastname, m.email, m.phone_no, m.gender, m.birthdate, pm.img, 
+                   ma.address, ma.is_main, ma.firstname, ma.lastname, ma.phone_no, ma.note
             FROM member AS m
                      LEFT JOIN (
                 SELECT pm.member_id, pm.img
                 FROM photo_member AS pm
             ) pm ON m.id = pm.member_id
+                     LEFT JOIN (
+                SELECT *
+                FROM member_address AS ma
+            ) ma ON m.id = ma.member_id
             WHERE m.email = $1
             `,
         [email]

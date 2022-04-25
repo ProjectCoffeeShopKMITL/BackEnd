@@ -293,6 +293,17 @@ const deleteMenu = async (req, res) => {
       `,
       [id]
     );
+
+    //delete menu_stock where menu_id = id
+    const deleteMenuStocksData = await pool.query(
+      `
+          DELETE
+          FROM menu_stocks AS ms
+          WHERE ms.menu_id = $1
+      `,
+      [id]
+    );
+
     //delete menu from database
     const deleteMenuData = await pool.query(
       `

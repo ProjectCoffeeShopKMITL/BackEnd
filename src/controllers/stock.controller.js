@@ -8,7 +8,7 @@ const getAllStocks = async (req, res) => {
     //get all record of stocks table
     const getAllStocksData = await pool.query(
       `
-                    SELECT s.id, s.ingredient_name, s.quantity
+                    SELECT s.id, s.ingredient_name, s.quantity, s.unit
                     FROM stocks AS s
                     ORDER BY s.id
             `
@@ -20,20 +20,20 @@ const getAllStocks = async (req, res) => {
   }
 };
 
-//(POST) add stock {ingredient_name, quantity} '/stocks'
+//(POST) add stock {ingredient_name, quantity, unit} '/stocks'
 const addNewStock = async (req, res) => {
   try {
-    //get stocks = [{ingredient_name, quantity}, ...]
+    //get stocks = [{ingredient_name, quantity, unit}, ...]
     const { stocks } = req.body;
     //add new stock to stocks table
     for (const eachStock of stocks) {
       //add new stock
       const addStockData = await pool.query(
         `
-                INSERT INTO stocks ( ingredient_name, quantity)
-                VALUES ( $1, $2)
+                INSERT INTO stocks ( ingredient_name, quantity, unit)
+                VALUES ( $1, $2, $3)
         `,
-        [eachStock.ingredient_name, quantity]
+        [eachStock.ingredient_name, each.quantity, each.unit]
       );
       //get latese id to add stocks_transaction
       let getStockId = await pool.query(

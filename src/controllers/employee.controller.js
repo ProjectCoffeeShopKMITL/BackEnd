@@ -71,13 +71,16 @@ const addEmployee = async (req, res) => {
       //parse to int
       getEmployeeIdData = parseInt(getEmployeeIdData.rows[0]);
 
+      //get image from req.body
+      const { image } = req.body;
+
       //add photo_employee to database
       const addPhotoEmployeeData = await pool.query(
         `
                 INSERT INTO photo_employee( img, employee_id)
-                VALUES ( null, $1)    
+                VALUES ( $1, $2)    
             `,
-        [getEmployeeIdData]
+        [image, getEmployeeIdData]
       );
 
       res.send("addEmployee complete");
@@ -110,7 +113,7 @@ const updateEmployee = async (req, res) => {
     );
 
     //get image employee from req.body
-    const { employee_img } = req.body;
+    const { image } = req.body;
 
     //update image to database
     const updateImgEmployeeData = await pool.query(
@@ -119,7 +122,7 @@ const updateEmployee = async (req, res) => {
             SET img = $1
             WHERE id = $2
         `,
-      [employee_img, id]
+      [image, id]
     );
 
     res.send("updateEmployee complete");
@@ -130,18 +133,15 @@ const updateEmployee = async (req, res) => {
 
 // (POST) login employee '/employees/:id/login'
 const loginEmployee = async (req, res) => {
-    try {
-        //get employee id from req.params
-        const { id } = req.params;
+  try {
+    //get employee id from req.params
+    const { id } = req.params;
 
-        //get email, password from req.body
-        const { email, password} = req.body;
-
-
-
-    } catch (err) {
-        console.error(err.message);
-    }
+    //get email, password from req.body
+    const { email, password } = req.body;
+  } catch (err) {
+    console.error(err.message);
+  }
 };
 
 // (POST) logout
@@ -149,5 +149,5 @@ const loginEmployee = async (req, res) => {
 module.exports = {
   getAllEmployees,
   addEmployee,
-  updateEmployee
+  updateEmployee,
 };

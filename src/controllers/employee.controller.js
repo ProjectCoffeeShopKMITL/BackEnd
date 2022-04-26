@@ -121,7 +121,7 @@ const updateEmployee = async (req, res) => {
       `
             UPDATE photo_employee
             SET img = $1
-            WHERE id = $2
+            WHERE employee_id = $2
         `,
       [image, id]
     );

@@ -124,6 +124,5 @@ module.exports = {
   getAllStocks,
   addNewStock,
   updateStocks,
-  calculateStocks,
   deleteStock
 };

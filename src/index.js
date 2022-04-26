@@ -87,6 +87,7 @@ app.get("/stocks", stockRoute);
 app.post("/stocks/add", stockRoute);
 app.put("/stocks/update/:id", stockRoute);
 app.post("/stocks/calculate", stockRoute);
+app.delete("/stocks/delete/:id", stockRoute);
 
 //employee route
 app.get("/employees", employeeRoute);

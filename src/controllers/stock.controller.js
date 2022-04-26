@@ -61,7 +61,7 @@ const addNewStock = async (req, res) => {
   }
 };
 
-//(POST) update ingredient_name, quantity(add only), unit of ingredient stock '/stocks/update/:id'
+//(PUT) update ingredient_name, quantity(add only), unit of ingredient stock '/stocks/update/:id'
 const updateStocks = async (req, res) => {
   try {
     //get stock_id from req.params
@@ -117,12 +117,42 @@ const calculateStocks = async (req, res) => {
   }
 };
 
-//(GET) get recipe(all need ingredient) of a menu
-//(POST)
+//(DELETE) delete a stock '/stocks/delete/:id'
+const deleteStock = async (req, res) => {
+  try {
+    //get stock_id from req.params
+    const { id } = req.params;
+
+    //delete from menu_stocks
+    const deleteMenu_stocksData = await pool.query(
+      `
+          DELETE
+          FROM menu_stocks
+          WHERE stock_id = $1;
+      `,
+      [id]
+    );
+
+    //delete from stocks
+    const deleteStocks = await pool.query(
+      `
+          DELETE
+          FROM stocks
+          WHERE id = $1;
+      `,
+      [id]
+    );
+
+    res.send("deleteStock complete");
+  } catch (err) {
+    console.error(err.message);
+  }
+};
 
 module.exports = {
   getAllStocks,
   addNewStock,
   updateStocks,
   calculateStocks,
+  deleteStock
 };

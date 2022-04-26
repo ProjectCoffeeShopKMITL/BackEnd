@@ -93,6 +93,10 @@ app.delete("/stocks/delete/:id", stockRoute);
 app.get("/employees", employeeRoute);
 app.post("/employees", employeeRoute);
 app.put("/employees/:id", employeeRoute);
+app.post("/employees/login/:id", employeeRoute);
+app.post("/employees/logout/:id", employeeRoute);
+app.delete("/employees/delete/:id", employeeRoute);
+
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

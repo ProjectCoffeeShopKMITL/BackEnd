@@ -131,23 +131,124 @@ const updateEmployee = async (req, res) => {
   }
 };
 
-// (POST) login employee '/employees/:id/login'
+// (POST) login employee '/employees/login/:id'
 const loginEmployee = async (req, res) => {
   try {
-    //get employee id from req.params
-    const { id } = req.params;
-
     //get email, password from req.body
     const { email, password } = req.body;
+
+    const checkPassword = await pool.query(
+      `
+      SELECT COUNT(email)
+      FROM member
+      WHERE email = $1
+        AND password = $2
+      `,
+      [email, password]
+    );
+
+    if (checkPassword.rows[0].count == 1) {
+      //update login_time
+      const updateLoginTimeData = await pool.query(
+        `
+            UPDATE employee
+            SET login_time = NOW(), logout_time = null
+            WHERE email = $1
+        `,
+        [email]
+      );
+
+      //get info from database
+      const getEmployeeData = await pool.query(
+        `
+            SELECT e.id,
+                   e.firstname, 
+                   e.lastname, 
+                   e.email, 
+                   e.phone_no, 
+                   e.age, 
+                   e.login_time, 
+                   e.logout_time, 
+                   pe.id AS photo_employee_id,
+                   pe.img
+            FROM employee AS e
+                     LEFT JOIN (
+                SELECT pe.employee_id, pe.id, pe.img
+                FROM photo_employee = pe
+            ) pm ON e.id = pe.employee_id
+            WHERE e.email = $1
+            `,
+        [email]
+      );
+
+      res.send(getEmployeeData.rows[0]);
+    } else {
+      res.status(400).send("Not have this email!");
+    }
   } catch (err) {
     console.error(err.message);
   }
 };
 
-// (POST) logout
+// (POST) logout '/employees/logout/:id'
+const logoutEmployee = async (req, res) => {
+  try {
+    //get employee_id from req.params
+    const { id } = req.params;
+
+    //update logout_time data
+    const updateLogoutTimeData = await pool.query(
+      `
+          UPDATE employee
+          SET logout_time = NOW()
+          WHERE id = $1
+      `,
+      [id]
+    );
+
+    res.send("logoutEmployee complete");
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
+// (DELETE) delete employee '/employees/delete/:id'
+const deleteEmployee = async (req, res) => {
+  try {
+    //get employee_id from req.params
+    const { id } = req.params;
+
+    //delete photo_employee data
+    const deletePhotoEmployeeData = await pool.query(
+      `
+          DELETE
+          FROM photo_employee
+          WHERE employee_id = $1
+      `,
+      [id]
+    );
+
+    //delete employee data
+    const deleteEmployeeData = await pool.query(
+      `
+          DELETE
+          FROM employee
+          WHERE id = $1
+      `,
+      [id]
+    );
+
+    res.send("deleteEmployee complete");
+  } catch (err) {
+    console.error(err.message);
+  }
+};
 
 module.exports = {
   getAllEmployees,
   addEmployee,
   updateEmployee,
+  loginEmployee,
+  logoutEmployee,
+  deleteEmployee
 };

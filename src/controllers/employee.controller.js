@@ -6,14 +6,15 @@ const getAllEmployees = async (req, res) => {
     //get all employee from database
     const getAllEmployeesData = await pool.query(
       `
-            SELECT  e.firstname,
+            SELECT  e.id,
+                    e.firstname,
                     e.lastname,
                     e.age,
                     e.phone_no,
                     e.email, 
                     e.login_time, 
                     e.logout_time,
-                    pe.id,
+                    pe.id AS photo_employee_id,
                     pe.img 
             FROM employee AS e
                 LEFT JOIN (

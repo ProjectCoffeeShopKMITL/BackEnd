@@ -33,7 +33,7 @@ const addNewStock = async (req, res) => {
                 INSERT INTO stocks ( ingredient_name, quantity, unit)
                 VALUES ( $1, $2, $3)
         `,
-        [eachStock.ingredient_name, each.quantity, each.unit]
+        [eachStock.ingredient_name, eachStock.quantity, eachStock.unit]
       );
       //get latese id to add stocks_transaction
       let getStockId = await pool.query(
@@ -83,35 +83,6 @@ const updateStocks = async (req, res) => {
     );
 
     res.send("updateStocks complete");
-  } catch (err) {
-    console.error(err.message);
-  }
-};
-
-//(POST) calculate stock
-const calculateStocks = async (req, res) => {
-  try {
-    //get used of stock list
-    // usedStocks = [ {stocks_id, quantity} , ... ]
-    const { usedStocks } = req.body;
-
-    //loop for calculate stock
-    for (const eachData of usedStocks) {
-      //update stock in database
-      const updateStocks = await pool.query(
-        `
-                    UPDATE stocks 
-                    SET quantity = (SELECT 
-                                    FROM stocks
-                                    WHERE id = $1            
-                        ) - $2 
-                    WHERE id = $3 
-            `,
-        [eachData.stocks_id, eachData.quantity, eachData.stocks_id]
-      );
-    }
-
-    res.send("calculateStocks complete");
   } catch (err) {
     console.error(err.message);
   }

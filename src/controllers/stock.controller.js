@@ -61,35 +61,28 @@ const addNewStock = async (req, res) => {
   }
 };
 
-//(POST) add quantity of ingredient stock
-const addQuantityStocks = async (req, res) => {
+//(POST) update ingredient_name, quantity(add only), unit of ingredient stock '/stocks/update/:id'
+const updateStocks = async (req, res) => {
   try {
-    //get addStocks = [{stocks_id, quantity} , ...]
-    const { addStocks } = req.body;
+    //get stock_id from req.params
+    const { id } = req.params;
 
-    //loop eachData of addStocks
-    for (const eachAdd of addStocks) {
-      //update stocks
-      const updateStocksData = await pool.query(
-        `
+    //get { ingredient_name, quantity, unit }
+    const { ingredient_name, quantity, unit } = req.body;
+
+    //update stocks
+    const updateStocksData = await pool.query(
+      `
                 UPDATE stocks
-                SET quantity = (SELECT quantity
-                                FROM stocks
-                                WHERE id = 1) + $1
-                WHERE id = $2
+                SET ingredient_name = $1,
+                    quantity = $2,
+                    unit = $3 
+                WHERE id = $4
             `,
-        [eachAdd.quantity, eachAdd.stocks_id]
-      );
+      [ingredient_name, quantity, unit, id]
+    );
 
-      //add new stocks_transactions
-      const addStockTransactionData = await pool.query(
-        `
-                INSERT INTO ( stocks_id, quantity, timeaddstock)
-                VALUES ( $1, $2, NOW() )
-          `,
-        [eachAdd.stocks_id, eachAdd.quantity]
-      );
-    }
+    res.send("updateStocks complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -130,6 +123,6 @@ const calculateStocks = async (req, res) => {
 module.exports = {
   getAllStocks,
   addNewStock,
-  addQuantityStocks,
+  updateStocks,
   calculateStocks,
 };

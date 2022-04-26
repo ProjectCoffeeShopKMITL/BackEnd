@@ -10,6 +10,7 @@ const menuRoute = require("./routes/menu");
 const memberRoute = require("./routes/member");
 const orderRoute = require("./routes/order");
 const stockRoute = require("./routes/stock");
+const employeeRoute = require("./routes/employee");
 
 //middleware
 app.use(cors());
@@ -84,8 +85,13 @@ app.put("/orders/:id/status/:status_now", orderRoute);
 //stock route
 app.get("/stocks", stockRoute);
 app.post("/stocks/add", stockRoute);
-app.post("/stocks/update", stockRoute);
+app.put("/stocks/update/:id", stockRoute);
 app.post("/stocks/calculate", stockRoute);
+
+//employee route
+app.get("/employees", employeeRoute);
+app.post("/employees", employeeRoute);
+app.put("/employees/:id", employeeRoute);
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

@@ -70,7 +70,7 @@ const addEmployee = async (req, res) => {
       );
 
       //parse to int
-      getEmployeeIdData = parseInt(getEmployeeIdData.rows[0]);
+      getEmployeeIdData = parseInt(getEmployeeIdData.rows[0].id);
 
       //get image from req.body
       const { image } = req.body;

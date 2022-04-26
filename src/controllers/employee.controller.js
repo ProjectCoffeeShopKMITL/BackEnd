@@ -44,7 +44,7 @@ const addEmployee = async (req, res) => {
         `,
       [email]
     );
-    const duplicatedCount = parseInt(countDuplicatedEmailsData.rows[0]);
+    const duplicatedCount = parseInt(countDuplicatedEmailsData.rows[0].count);
 
     if (duplicatedCount != 0) {
       res.status(400).send("Duplicate Email Please Re-Register");

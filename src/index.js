@@ -97,7 +97,6 @@ app.post("/employees/login/:id", employeeRoute);
 app.post("/employees/logout/:id", employeeRoute);
 app.delete("/employees/delete/:id", employeeRoute);
 
-
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {
   console.log("Server has started on PORT 5001");

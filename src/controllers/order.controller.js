@@ -204,53 +204,150 @@ const getListMenu = async (req, res) => {
   }
 };
 
-// (POST) add order to database '/order'
+// (POST) order '/order'
 const addOrder = async (req, res) => {
   try {
-    //get detail order from client when order req.body
-    const {
-      member_id,
-      firstname,
-      lastname,
-      phone_no,
-      address,
-      note,
-      subtotal,
-      discount,
-      shipping,
-      total,
-    } = req.body;
-
     let { menu_array } = req.body;
 
-    // let menu_array = [
-    //   ["7", "2", "note"],
-    //   ["16", "3", "note"],
-    // ];
-    // menu 1, menu 2, ....
-    // '{ {"menu_id","quantity", "note"}, {} , ...}'
-    // '{ {"1", "2", "note"}, {"2", "1", "note"} }'
+    //object list quantity used [ [stocks_id , used_quantity], ... ]
+    let used_quantity_object = [];
+    // canAddOrder = boolean for check can order
+    let canAddOrder = true;
 
-    //tranform menu_array for insert into menu_array column
-    let text = "{";
-    for (let i = 0; i < menu_array.length; i++) {
-      text += "{";
-      for (let j = 0; j < menu_array[i].length; j++) {
-        text += '"';
-        text += menu_array[i][j];
-        text += '",';
+    for (const eachMenu of menu_array) {
+      let menu_id = parseInt(eachMenu[0]);
+      let menu_order_quantity = parseInt(eachMenu[1]);
+
+      //get recipe_quantity
+      const eachMenuRecipeData = await pool.query(
+        `
+            SELECT ms.id, 
+                  ms.menu_id, 
+                  ms.stock_id, 
+                  ms.quantity AS recipe_quantity
+            FROM menu_stocks AS ms
+            WHERE menu_id = $1
+            ORDER BY ms.id
+        `,
+        [menu_id]
+      );
+      //each is a record that tell about stock_id, recipe_quantity
+      for (const each of eachMenuRecipeData.rows) {
+        //calculate count of used_quantity of one ingredient
+        let all_used_quantity = parseFloat(each.recipe_quantity);
+        all_used_quantity *= menu_order_quantity;
+        // console.log( each.stock_id, typeof(each.stock_id) ,' ', all_used_quantity, typeof(each.stock_id));
+
+        if (used_quantity_object.length === 0) {
+          used_quantity_object.push([each.stock_id, all_used_quantity]);
+        } else {
+          let isDuplicated = false;
+          for (const eachIngredient of used_quantity_object) {
+            if (each.stock_id == eachIngredient[0]) {
+              isDuplicated = true;
+              eachIngredient[1] += all_used_quantity;
+              break;
+            } else {
+              isDuplicated = false;
+            }
+          }
+
+          if (isDuplicated) {
+            // console.log("Is dup");
+          } else {
+            used_quantity_object.push([each.stock_id, all_used_quantity]);
+          }
+          // console.log(used_quantity_object);
+        }
+      }
+    }
+    //after have list of used_quantity_object next is check if quantity in stock is more than or equal
+    //eachStock[0] is stock_id, eachStock[1] is quantity that need for add order
+    for (const eachStock of used_quantity_object) {
+      let isNotEnough = false;
+      const getAStockData = await pool.query(
+        `
+          SELECT s.quantity::float
+          FROM stocks AS s
+          WHERE s.id = $1
+        `,
+        [eachStock[0]]
+      );
+      // use getAStockData.rows[0].quantity is a stock_quantity, type = number
+      if (getAStockData.rows[0].quantity < eachStock[1]) {
+        isNotEnough = true;
+      } else {
+        isNotEnough = false;
+      }
+
+      if (isNotEnough) {
+        canAddOrder = false;
+        break;
+      } else {
+        continue;
+      }
+    }
+
+    if (canAddOrder) {
+      //delete ingredient in stock use used_quantity_object
+      //eachIngredient[0] is stock_id, eachIngredient[1] is quantity that need for add order
+      for (const eachIngredient of used_quantity_object) {
+        //update stock quantity from database
+        const updateStockData = await pool.query(
+          `
+              UPDATE stocks
+              SET quantity = quantity - $1
+              WHERE id = $2
+          `,
+          [eachIngredient[1], eachIngredient[0]]
+        );
+      }
+
+      //get detail order from client when order req.body
+      const {
+        member_id,
+        firstname,
+        lastname,
+        phone_no,
+        address,
+        note,
+        subtotal,
+        discount,
+        shipping,
+        total,
+      } = req.body;
+
+      let { menu_array } = req.body;
+
+      // result_used = [ ["2", "x"], ["3", "y"] ]
+
+      // let menu_array = [
+      //   ["7", "2", "note"],
+      //   ["16", "3", "note"],
+      // ];
+      // menu 1, menu 2, ....
+      // '{ {"menu_id","quantity", "note"}, {} , ...}'
+      // '{ {"1", "2", "note"}, {"2", "1", "note"} }'
+
+      //tranform menu_array for insert into menu_array column
+      let text = "{";
+      for (let i = 0; i < menu_array.length; i++) {
+        text += "{";
+        for (let j = 0; j < menu_array[i].length; j++) {
+          text += '"';
+          text += menu_array[i][j];
+          text += '",';
+        }
+        text = text.slice(0, -1);
+        text += "},";
       }
       text = text.slice(0, -1);
-      text += "},";
-    }
-    text = text.slice(0, -1);
-    text += "}";
+      text += "}";
 
-    //add detail
-    const addOrderData = await pool.query(
-      `
+      //add detail
+      const addOrderData = await pool.query(
+        `
           INSERT INTO orders( firstname,
-                              
                               lastname,
                               phone_no,
                               address,
@@ -276,42 +373,45 @@ const addOrder = async (req, res) => {
                   $11)
           RETURNING id
       `,
-      [
-        firstname,
-        lastname,
-        phone_no,
-        address,
-        note,
-        text,
-        subtotal,
-        discount,
-        shipping,
-        total,
-        member_id,
-      ]
-    );
+        [
+          firstname,
+          lastname,
+          phone_no,
+          address,
+          note,
+          text,
+          subtotal,
+          discount,
+          shipping,
+          total,
+          member_id,
+        ]
+      );
 
-    //get newest id from database table(menu)
-    let getIDnewest = await pool.query(
-      `
+      //get newest id from database table(menu)
+      let getIDnewest = await pool.query(
+        `
             SELECT id::int
             FROM orders
             ORDER BY id DESC
             LIMIT 1
       `
-    );
-    //parse object(getIDnewest) to int for use menu.id to store image
-    getIDnewest = parseInt(getIDnewest.rows[0].id);
+      );
+      //parse object(getIDnewest) to int for use menu.id to store image
+      getIDnewest = parseInt(getIDnewest.rows[0].id);
 
-    const addOrderStatusData = await pool.query(
-      `
+      const addOrderStatusData = await pool.query(
+        `
       INSERT INTO orders_status (order_id, status)
       VALUES ($1, 1)
       `,
-      [getIDnewest]
-    );
+        [getIDnewest]
+      );
 
-    res.send({ id: addOrderData.rows[0].id });
+      res.send({ id: addOrderData.rows[0].id });
+    } else {
+      res.status(400).send("Cannot Add Order Because out of stocks");
+    }
   } catch (err) {
     console.error(err.message);
   }
@@ -436,9 +536,10 @@ module.exports = {
   getAllOrders,
   getOrderForGuest,
   getOrderForMember,
-  addOrder,
   getListMenu,
   updateOrder,
   deleteOrder,
   updateStatusOrder,
+
+  addOrder,
 };

@@ -44,8 +44,9 @@ const getAllMenu = async (req, res) => {
 
     getAll.rows.forEach((data) => {
       data.ingredients = [];
+      data.status = 0;
     });
-
+    //push all recipe ingredient
     for (const each of getAllRecipesData.rows) {
       for (const eachData of getAll.rows) {
         if (each.menu_id != eachData.id) {
@@ -55,8 +56,43 @@ const getAllMenu = async (req, res) => {
         eachData.ingredients.push(each);
       }
     }
-    res.send(getAll.rows);
 
+    //check status available for menu
+    // status = 0 is not available
+    // status = 1 is available
+    for (const eachData of getAll.rows) {
+      // isAvailable = false is menu cannot add to cart
+      // isAvailable = true is menu can add to cart
+      let isAvailable = false;
+
+      //getEachMenuIngredientStock
+      const getEachMenuIngredientStockData = await pool.query(
+        `
+          SELECT ms.menu_id, ms.quantity::float AS used_quantity, s.quantity::float AS stock_quantity
+          FROM menu_stocks AS ms
+            LEFT JOIN (
+                SELECT s.id, s.quantity
+                FROM stocks AS s
+            ) s ON ms.stock_id = s.id
+          WHERE ms.menu_id = $1
+        `,
+        [eachData.id]
+      );
+
+      for (const eachStock of getEachMenuIngredientStockData.rows) {
+        if(eachStock.stock_quantity < eachStock.used_quantity) {
+          isAvailable = false;
+          eachData.status = 0;
+          break;
+        } else {
+          isAvailable = true;
+          eachData.status = 1;
+        }
+      }
+      // console.log(getEachMenuIngredientStockData.rows);
+      // console.log("--------------------------------");
+    }
+    res.send(getAll.rows);
     // res.json(getAll.rows);
   } catch (err) {
     console.error(err.message);

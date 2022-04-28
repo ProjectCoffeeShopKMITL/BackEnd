@@ -190,13 +190,28 @@ const getListMenu = async (req, res) => {
           `,
           [menu_id]
         );
+
         menu_array_result.push({
           ...getInfoData.rows[0],
           quantity: parseInt(quantity),
           note: note,
         });
       }
-      result.push({ ...each, menu_array: menu_array_result });
+
+      const orderStatus = await pool.query(
+        `
+          SELECT *
+          FROM orders_status AS os
+          WHERE os.order_id = $1
+        `,
+        [req.params.id]
+      );
+
+      result.push({
+        ...each,
+        menu_array: menu_array_result,
+        status: orderStatus.rows[0].status,
+      });
     }
     res.send(result);
   } catch (err) {
@@ -511,11 +526,10 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-//update status order '/orders/:id/status'
+//(PUT) update status order '/orders/:id/status/:status_now'
 const updateStatusOrder = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status_now } = req.body;
+    const { id, status_now } = req.params;
 
     const updateStatusData = await pool.query(
       `

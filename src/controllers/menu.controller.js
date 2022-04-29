@@ -80,7 +80,7 @@ const getAllMenu = async (req, res) => {
       );
 
       for (const eachStock of getEachMenuIngredientStockData.rows) {
-        if(eachStock.stock_quantity < eachStock.used_quantity) {
+        if (eachStock.stock_quantity < eachStock.used_quantity) {
           isAvailable = false;
           eachData.status = 0;
           break;
@@ -211,16 +211,17 @@ const addMenu = async (req, res) => {
     // ingredients = [ {stock_id, quantity, unit}, {} , ...]
     // add to menu_stock
     const { ingredients } = req.body;
+    console.log("ingredient", ingredients);
 
     //loop insert into 'menu_stocks'
     for (const each of ingredients) {
       //add to database
       const addMenu_stocks = await pool.query(
         `
-            INSERT INTO menu_stocks (menu_id, stock_id, quantity, unit)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO menu_stocks (menu_id, stock_id, quantity)
+            VALUES ($1, $2, $3)
         `,
-        [getIDnewest, each.stock_id, each.quantity, each.unit]
+        [getIDnewest, each.stock_id, each.quantity]
       );
     }
 
@@ -292,10 +293,10 @@ const updateMenu = async (req, res) => {
     for (const eachData of ingredients) {
       const addMenu_stock = await pool.query(
         `
-            INSERT INTO menu_stocks ( menu_id, stock_id, quantity, unit)
-            VALUES ( $1, $2, $3, $4)
+            INSERT INTO menu_stocks ( menu_id, stock_id, quantity)
+            VALUES ( $1, $2, $3)
         `,
-        [id, eachData.stock_id, eachData.quantity, each.unit]
+        [id, eachData.stock_id, eachData.quantity]
       );
     }
 

@@ -294,13 +294,6 @@ const addAddress = async (req, res) => {
   }
 };
 
-//get coupon of one member '/members/:id/coupons'
-const getAllCoupons = async (req, res) => {
-  try {
-  } catch (err) {
-    console.error(err.message);
-  }
-};
 
 //get all bill of one member '/members/:id/bills' NOT have bill table
 // const getAllbills = async (req, res) => {
@@ -329,5 +322,4 @@ module.exports = {
   deleteAddress,
   addAddress,
 
-  getAllCoupons,
 };

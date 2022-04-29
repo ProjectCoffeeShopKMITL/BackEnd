@@ -103,6 +103,15 @@ const deleteStock = async (req, res) => {
       `,
       [id]
     );
+    //delete stock transaction
+    const deleteStockTransactionData = await pool.query(
+      `
+        DELETE
+        FROM stocks_transaction
+        WHERE stocks_id = $1
+      `,
+      [id]
+      );
 
     //delete from stocks
     const deleteStocks = await pool.query(

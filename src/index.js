@@ -11,6 +11,7 @@ const memberRoute = require("./routes/member");
 const orderRoute = require("./routes/order");
 const stockRoute = require("./routes/stock");
 const employeeRoute = require("./routes/employee");
+const couponRoute = require("./routes/coupons");
 
 //middleware
 app.use(cors());
@@ -70,8 +71,6 @@ app.put("/members/:id/addresses/:id_address", memberRoute);
 app.delete("/members/:id/addresses/:id_address", memberRoute);
 app.post("/members/:id/addresses", memberRoute);
 
-app.get("/members/:id/coupons", memberRoute);
-
 //order route
 app.get("/orders", orderRoute);
 app.get("/orders/member/:id", orderRoute);
@@ -96,6 +95,9 @@ app.put("/employees/:id", employeeRoute);
 app.post("/employees/login/:id", employeeRoute);
 app.post("/employees/logout/:id", employeeRoute);
 app.delete("/employees/delete/:id", employeeRoute);
+
+//coupons route
+app.get("/members/:id/coupons", couponRoute);
 
 //listen on port 5001
 app.listen(process.env.API_PORT, () => {

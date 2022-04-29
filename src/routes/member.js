@@ -18,6 +18,5 @@ router.put(
 router.delete("/members/:id/addresses/:id_address", memberController.deleteAddress);
 router.post("/members/:id/addresses", memberController.addAddress);
 
-router.get("/members/:id/coupons", memberController.getAllCoupons);
 
 module.exports = router;

@@ -240,7 +240,7 @@ const updateAddress = async (req, res) => {
             WHERE id = $7
                 AND member_id = $8
         `,
-      [address, is_main, firstname, lastname, phone_no, note, id, id_address]
+      [address, is_main, firstname, lastname, phone_no, note, id_address, id]
     );
 
     //log complete
@@ -289,7 +289,7 @@ const addAddress = async (req, res) => {
     );
 
     //log add complete
-    console.log("ADD new address complete");
+    res.send("ADD new address complete");
   } catch (err) {
     console.error(err.message);
   }
@@ -348,7 +348,8 @@ const updateMainAddress = async (req, res) => {
         SELECT COUNT(id)::int
         FROM member_address AS ma
         WHERE ma.member_id = $1
-      `
+      `,
+      [id]
     );
 
     for (let i = 0; i < getCountAddressesData.rows.count; i++) {
@@ -358,7 +359,7 @@ const updateMainAddress = async (req, res) => {
             UPDATE member_address
             SET is_main = false
             WHERE member_id = $1
-        `
+        `[id]
       );
     }
 
@@ -405,5 +406,5 @@ module.exports = {
   updateAddress,
   deleteAddress,
   addAddress,
-  updateMainAddress
+  updateMainAddress,
 };

@@ -342,26 +342,15 @@ const updateMainAddress = async (req, res) => {
     //get params of id, id_address from req.params
     const { id, id_address } = req.params;
 
-    //get count of all addresses member
-    const getCountAddressesData = await pool.query(
+    //set all false
+    const setFalseAllData = await pool.query(
       `
-        SELECT COUNT(id)::int
-        FROM member_address AS ma
-        WHERE ma.member_id = $1
-      `,
-      [id]
-    );
-
-    for (let i = 0; i < getCountAddressesData.rows.count; i++) {
-      //set all is main false
-      const setFalseAllData = await pool.query(
-        `
             UPDATE member_address
             SET is_main = false
             WHERE member_id = $1
-        `[id]
-      );
-    }
+        `,
+      [id]
+    );
 
     //update only address that is mained
     const updateMainData = pool.query(

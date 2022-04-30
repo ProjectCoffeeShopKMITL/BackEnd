@@ -139,6 +139,7 @@ const loginMember = async (req, res) => {
 };
 
 //get membership of one member '/members/:id/membership'
+
 const getMembership = async (req, res) => {
   try {
     //get id member from req.params
@@ -294,6 +295,46 @@ const addAddress = async (req, res) => {
   }
 };
 
+// (PUT) update member profile '/members/:id'
+const updateMemberProfile = async (req, res) => {
+  try {
+    //get member_id from req.params
+    const { id } = req.params;
+
+    const { firstname, lastname, phone_no, gender, birthdate } = req.body;
+
+    //update to database
+    const updateProfileData = await pool.query(
+      `
+          UPDATE member
+          SET firstname = $1,
+              lastname  = $2,
+              phone_no  = $3,
+              gender    = $4,
+              birthdate = $5
+          WHERE id = $6
+      `,
+      [firstname, lastname, phone_no, gender, birthdate]
+    );
+
+    //get img from req.body
+    const { img } = req.body;
+
+    //update img member
+    const updatePhotoMemberData = await pool.query(
+      `
+          UPDATE photo_member
+          SET img = $1
+          WHERE member_id = $2
+      `,
+      [img, id]
+      );
+
+    res.send("updateMemberProfile complete");
+  } catch (err) {
+    console.error(err.message);
+  }
+};
 //get all bill of one member '/members/:id/bills' NOT have bill table
 // const getAllbills = async (req, res) => {
 //     try {
@@ -314,6 +355,7 @@ module.exports = {
   registerMember,
   loginMember,
   getMembership,
+  updateMemberProfile,
 
   getAllAddresses,
   getAddress,

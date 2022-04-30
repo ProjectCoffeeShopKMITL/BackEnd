@@ -63,6 +63,7 @@ app.get("/members/:id", memberRoute);
 app.post("/register", memberRoute);
 app.post("/login", memberRoute);
 app.get("/members/:id/membership", memberRoute);
+app.put("/members/:id", memberRoute);
 
 //address
 app.get("/members/:id/addresses", memberRoute);

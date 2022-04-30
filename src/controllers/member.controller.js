@@ -6,7 +6,7 @@ const getAllMembers = async (req, res) => {
     //get member from database
     const getAllMemberData = await pool.query(
       `
-            SELECT pm.img AS photo, m.firstname, m.lastname, m.phone_no AS mobile, ms.rank, m.register_date
+            SELECT pm.img AS photo, m.firstname, m.lastname, m.email, m.phone_no AS mobile, ms.rank, m.register_date
             FROM member AS m
                     LEFT JOIN (
                 SELECT pm.member_id, pm.img
@@ -294,7 +294,6 @@ const addAddress = async (req, res) => {
   }
 };
 
-
 //get all bill of one member '/members/:id/bills' NOT have bill table
 // const getAllbills = async (req, res) => {
 //     try {
@@ -321,5 +320,4 @@ module.exports = {
   updateAddress,
   deleteAddress,
   addAddress,
-
 };

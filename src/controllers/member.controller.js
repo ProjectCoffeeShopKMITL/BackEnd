@@ -277,15 +277,15 @@ const addAddress = async (req, res) => {
     //get id member from req.params
     const { id } = req.params;
     //get info address from req.body
-    const { address, firstname, lastname, phone_no, note } = req.body;
+    const { address, firstname, lastname, phone_no, note, is_main } = req.body;
 
     //add address to database
     const addAddressData = await pool.query(
       `
-            INSERT INTO member_address (address, is_main, member_id, firstname, lastname, phone_no, note)
-            VALUES ( $1, false, $2, $3, $4, $5, $6)
+            INSERT INTO member_address (address, member_id, firstname, lastname, phone_no, note, is_main)
+            VALUES ( $1, $2, $3, $4, $5, $6, $7)
         `,
-      [address, id, firstname, lastname, phone_no, note]
+      [address, id, firstname, lastname, phone_no, note, is_main]
     );
 
     //log add complete

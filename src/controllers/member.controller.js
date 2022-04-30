@@ -314,7 +314,7 @@ const updateMemberProfile = async (req, res) => {
               birthdate = $5
           WHERE id = $6
       `,
-      [firstname, lastname, phone_no, gender, birthdate]
+      [firstname, lastname, phone_no, gender, birthdate, id]
     );
 
     //get img from req.body
@@ -328,7 +328,7 @@ const updateMemberProfile = async (req, res) => {
           WHERE member_id = $2
       `,
       [img, id]
-      );
+    );
 
     res.send("updateMemberProfile complete");
   } catch (err) {

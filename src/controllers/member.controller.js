@@ -255,18 +255,56 @@ const deleteAddress = async (req, res) => {
     //get id member and id address
     const { id, id_address } = req.params;
 
-    //delete address from database
-    const deleteAddressData = await pool.query(
+    //get is_main variable from database
+    const getIsMainData = await pool.query(
       `
+        SELECT is_main::boolean
+        FROM member_address AS ma
+        WHERE ma.id = $1
+      `,
+      [id_address]
+    );
+
+    //check is_main
+    if (getIsMainData.rows[0].is_main) {
+      //delete address from database
+      const deleteAddressData = await pool.query(
+        `
+            DELETE
+            FROM member_address
+            WHERE member_id = $1
+                AND id = $2;
+              `,
+        [id, id_address]
+      );
+
+      //auto set new is_main
+      const setNewMain = await pool.query(
+        `
+            update member_address
+            SET is_main = true
+            WHERE id in (SELECT ma.id
+                        FROM member_address AS ma
+                        ORDER BY ma.id
+                        LIMIT 1);
+        `
+      );
+
+    } else {
+      //delete address from database
+      const deleteAddressData = await pool.query(
+        `
             DELETE
             FROM member_address
             WHERE member_id = $1
                 AND id = $2;
         `,
-      [id, id_address]
-    );
+        [id, id_address]
+      );
+    }
+
     //log delete complete
-    res.json("deleteAddress complete");
+    res.send("deleteAddress complete");
   } catch (err) {
     console.error(err.message);
   }

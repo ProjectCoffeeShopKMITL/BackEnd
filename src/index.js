@@ -71,6 +71,7 @@ app.get("/members/:id/addresses/:id_address", memberRoute);
 app.put("/members/:id/addresses/:id_address", memberRoute);
 app.delete("/members/:id/addresses/:id_address", memberRoute);
 app.post("/members/:id/addresses", memberRoute);
+app.post("/members/:id/addresses/:id_address/main", memberRoute);
 
 //order route
 app.get("/orders", orderRoute);

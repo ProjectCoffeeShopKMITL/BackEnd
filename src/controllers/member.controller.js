@@ -335,6 +335,49 @@ const updateMemberProfile = async (req, res) => {
     console.error(err.message);
   }
 };
+
+// (POST) update main address of all addresses '/members/:id/addresses/:id_address/main'
+const updateMainAddress = async (req, res) => {
+  try {
+    //get params of id, id_address from req.params
+    const { id, id_address } = req.params;
+
+    //get count of all addresses member
+    const getCountAddressesData = await pool.query(
+      `
+        SELECT COUNT(id)::int
+        FROM member_address AS ma
+        WHERE ma.member_id = $1
+      `
+    );
+
+    for (let i = 0; i < getCountAddressesData.rows.count; i++) {
+      //set all is main false
+      const setFalseAllData = await pool.query(
+        `
+            UPDATE member_address
+            SET is_main = false
+            WHERE member_id = $1
+        `
+      );
+    }
+
+    //update only address that is mained
+    const updateMainData = pool.query(
+      `
+          UPDATE member_address
+          SET is_main = true
+          WHERE member_id = $1
+                AND id = $2
+      `,
+      [id, id_address]
+    );
+    res.send("updateMainAddress complete");
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+
 //get all bill of one member '/members/:id/bills' NOT have bill table
 // const getAllbills = async (req, res) => {
 //     try {
@@ -362,4 +405,5 @@ module.exports = {
   updateAddress,
   deleteAddress,
   addAddress,
+  updateMainAddress
 };

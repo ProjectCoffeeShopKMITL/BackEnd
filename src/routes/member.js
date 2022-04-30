@@ -19,5 +19,7 @@ router.put(
 router.delete("/members/:id/addresses/:id_address", memberController.deleteAddress);
 router.post("/members/:id/addresses", memberController.addAddress);
 
+router.post("/members/:id/addresses/:id_address/main", memberController.updateMainAddress);
+
 
 module.exports = router;

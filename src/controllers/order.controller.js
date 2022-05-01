@@ -104,10 +104,10 @@ const getOrderForMember = async (req, res) => {
   }
 };
 
-// (GET) get a order in database '/orders/guest/:firstname'
+// (GET) get a order in database '/orders/guest/:firstname/:lastname'
 const getOrderForGuest = async (req, res) => {
   try {
-    const { firstname } = req.params;
+    const { firstname, lastname } = req.params;
 
     const getOrderData = await pool.query(
       `
@@ -120,8 +120,9 @@ const getOrderForGuest = async (req, res) => {
           FROM orders_status AS os
         ) os ON o.id = os.order_id
       WHERE o.firstname = $1
+          AND o.lastname = $2
       `,
-      [firstname]
+      [firstname, lastname]
     );
 
     const result = [];

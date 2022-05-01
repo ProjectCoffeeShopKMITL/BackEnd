@@ -142,7 +142,6 @@ const getRecommendMenu = async (req, res) => {
       `
       SELECT  m.name,
               pm.img,
-              rate::float,
               m.price::float,
               m.sale_to::float
       FROM menu AS m
@@ -152,11 +151,6 @@ const getRecommendMenu = async (req, res) => {
           ORDER BY pm.id
           LIMIT 1
       ) pm ON m.id = pm.menu_id
-               LEFT JOIN (
-          SELECT AVG(rate) AS rate, r.menu_id
-          FROM review AS r
-          GROUP BY r.menu_id
-      ) r ON m.id = r.menu_id
       WHERE m.is_recommend = true
       ORDER BY RANDOM()
       LIMIT 4

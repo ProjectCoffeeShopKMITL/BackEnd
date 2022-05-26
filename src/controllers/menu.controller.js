@@ -136,6 +136,8 @@ const getDetailMenu = async (req, res) => {
 
 //get recommend menu '/menus/recommend'
 const getRecommendMenu = async (req, res) => {
+  console.log("testtt");
+
   try {
     //get recommend menu limit 4 menu order by Random
     const randRecommendMenu = await pool.query(
@@ -149,7 +151,6 @@ const getRecommendMenu = async (req, res) => {
           SELECT pm.menu_id, pm.id, pm.img
           FROM photo_menu AS pm
           ORDER BY pm.id
-          LIMIT 1
       ) pm ON m.id = pm.menu_id
       WHERE m.is_recommend = true
       ORDER BY RANDOM()
